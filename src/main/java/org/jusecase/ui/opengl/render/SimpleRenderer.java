@@ -89,7 +89,7 @@ public class SimpleRenderer implements Renderer {
     }
 
     private void loadMatrix(Node2d node) {
-        GL11.glLoadMatrixd(Matrix.toOpenGlMatrix(node.getGlobalMatrix()));
+        GL11.glLoadMatrixd(Matrix.toOpenGlMatrix4d(node.getGlobalMatrix()));
     }
 
     private void setColor(Color color) {

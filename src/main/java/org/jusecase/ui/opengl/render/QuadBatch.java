@@ -94,18 +94,6 @@ class QuadBatch {
         transformQuadVertices(image);
 
         TexCoords texCoords = image.getTexture().getTexCoords();
-        /*
-        glBegin(GL_QUADS);
-        setColor(node.getColor());
-        glTexCoord2d(texCoords.left, texCoords.top);
-        glVertex2d(0, 0);
-        glTexCoord2d(texCoords.right, 0);
-        glVertex2d(node.getWidth(), 0);
-        glTexCoord2d(texCoords.right, texCoords.bottom);
-        glVertex2d(node.getWidth(), node.getHeight());
-        glTexCoord2d(texCoords.left, texCoords.bottom);
-        glVertex2d(0, node.getHeight());
-        glEnd();*/
 
         vertexBuffer.put(quadVertices[0]);
         vertexBuffer.put((float)texCoords.left).put((float)texCoords.top);
@@ -129,13 +117,13 @@ class QuadBatch {
         if (textureId == 0) {
             glEnableVertexAttribArray(0);
             glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 2);
-            glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(0);
         } else {
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
             glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 4);
-            glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(0);
         }
 
         glBindVertexArray(0);
@@ -184,8 +172,9 @@ class QuadBatch {
             if (textureId == 0) {
                 glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
             } else {
-                glVertexAttribPointer(0, 2, GL_FLOAT, false, 4, 0);
-                glVertexAttribPointer(1, 2, GL_FLOAT, false, 4, 2);
+                // 4 bytes per float
+                glVertexAttribPointer(0, 2, GL_FLOAT, false, 4*4, 0);
+                glVertexAttribPointer(1, 2, GL_FLOAT, false, 4*4, 2*4);
             }
 
             glBindVertexArray(0);
