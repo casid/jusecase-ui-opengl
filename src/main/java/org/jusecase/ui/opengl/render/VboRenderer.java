@@ -8,17 +8,12 @@ import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.ui.opengl.shader.Shader;
 import org.jusecase.ui.opengl.shader.stage.FragmentShader;
 import org.jusecase.ui.opengl.shader.stage.VertexShader;
-import org.lwjgl.opengl.GL13;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
 
 public class VboRenderer implements Renderer {
     private int currentTextureId;
@@ -33,64 +28,65 @@ public class VboRenderer implements Renderer {
 
     @Override
     public void begin() {
-        /*glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, 800, 600, 0, 1, -1);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();*/
-
         projection = Matrix3x2.orthoProjection(800, 600);
 
         currentTextureId = -1;
 
         if (quadShader == null) {
-            quadShader = Shader.create()
-                    .withVertexShader(new VertexShader("#version 330\n" +
-                            "layout(location = 0) in vec2 vertex;\n" +
-                            "uniform mat4 projection;\n" +
-                            "void main() {\n" +
-                            "  gl_Position = projection * vec4(vertex.xy, 0, 1);\n" +
-                            "}"))
-                    .withFragmentShader(new FragmentShader("#version 330\n" +
-                            "out vec4 fragColor;\n" +
-                            "void main(){\n" +
-                            "  fragColor = vec4(1,1,1,1);\n" +
-                            "}"))
-                    .withAttributeLocation(0, "vertex")
-                    .build();
-
-            glBindAttribLocation(quadShader.getId(), 0, "vertex");
-
-            quadShader.use();
-            quadShader.setUniform("projection", projection);
+            quadShader = createShader(false);
         }
 
         if (imageShader == null) {
-            imageShader = Shader.create()
-                    .withVertexShader(new VertexShader("#version 330\n" +
-                            "layout(location = 0) in vec2 vertex;\n" +
-                            "layout(location = 1) in vec2 texcoord;\n" +
-                            "out vec2 vTexcoord;\n" +
-                            "uniform mat4 projection;\n" +
-                            "void main() {\n" +
-                            "  vTexcoord=texcoord;\n" +
-                            "  gl_Position = projection * vec4(vertex, 0, 1);\n" +
-                            "}"))
-                    .withFragmentShader(new FragmentShader("#version 330\n" +
-                            "in vec2 vTexcoord;\n" +
-                            "out vec4 color;\n" +
-                            "uniform sampler2D uTexture;\n" +
-                            "void main(){\n" +
-                            "  color = texture(uTexture, vTexcoord);\n" +
-                            "}"))
-                    .withAttributeLocation(0, "vertex")
-                    .withAttributeLocation(1, "texcoord")
-                    .build();
-
-            imageShader.use();
-            imageShader.setUniform("projection", projection);
+            imageShader = createShader(true);
         }
+    }
+
+    private Shader createShader(boolean texCoords) {
+        Shader shader = Shader.create()
+                .withVertexShader(new VertexShader(createVertexShaderSource(texCoords)))
+                .withFragmentShader(new FragmentShader(createFragmentShaderSource(texCoords)))
+                .build();
+
+        shader.use();
+        shader.setUniform("projection", projection);
+
+        return shader;
+    }
+
+    private String createVertexShaderSource(boolean texCoords) {
+        String source = "#version 330\n";
+        source += "layout(location = 0) in vec2 vertex;\n";
+        if (texCoords) {
+            source += "layout(location = 1) in vec2 texcoord;\n";
+            source += "out vec2 vTexcoord;\n";
+        }
+        source += "uniform mat4 projection;\n";
+        source += "void main() {\n";
+        if (texCoords) {
+            source += "  vTexcoord=texcoord;\n";
+        }
+        source += "  gl_Position = projection * vec4(vertex.xy, 0, 1);\n";
+        source += "}";
+
+        return source;
+    }
+
+    private String createFragmentShaderSource(boolean texCoords) {
+        String source = "#version 330\n";
+        if (texCoords) {
+            source += "in vec2 vTexcoord;\n";
+            source += "uniform sampler2D uTexture;\n";
+        }
+        source += "out vec4 fragColor;\n";
+        source += "void main() {\n";
+        if (texCoords) {
+            source += "  fragColor = texture(uTexture, vTexcoord);\n";
+        } else {
+            source += "  fragColor = vec4(1,1,1,1);\n";
+        }
+        source += "}";
+
+        return source;
     }
 
     @Override
