@@ -56,12 +56,15 @@ public class VboRenderer implements Renderer {
     private String createVertexShaderSource(boolean texCoords) {
         String source = "#version 330\n";
         source += "layout(location = 0) in vec2 vertex;\n";
+        source += "layout(location = 1) in vec4 color;\n";
+        source += "out vec4 vColor;\n";
         if (texCoords) {
-            source += "layout(location = 1) in vec2 texcoord;\n";
+            source += "layout(location = 2) in vec2 texcoord;\n";
             source += "out vec2 vTexcoord;\n";
         }
         source += "uniform mat4 projection;\n";
         source += "void main() {\n";
+        source += "  vColor=color;\n";
         if (texCoords) {
             source += "  vTexcoord=texcoord;\n";
         }
@@ -73,6 +76,7 @@ public class VboRenderer implements Renderer {
 
     private String createFragmentShaderSource(boolean texCoords) {
         String source = "#version 330\n";
+        source += "in vec4 vColor;\n";
         if (texCoords) {
             source += "in vec2 vTexcoord;\n";
             source += "uniform sampler2D uTexture;\n";
@@ -80,9 +84,9 @@ public class VboRenderer implements Renderer {
         source += "out vec4 fragColor;\n";
         source += "void main() {\n";
         if (texCoords) {
-            source += "  fragColor = texture(uTexture, vTexcoord);\n";
+            source += "  fragColor = vColor * texture(uTexture, vTexcoord);\n";
         } else {
-            source += "  fragColor = vec4(1,1,1,1);\n";
+            source += "  fragColor = vColor;\n";
         }
         source += "}";
 

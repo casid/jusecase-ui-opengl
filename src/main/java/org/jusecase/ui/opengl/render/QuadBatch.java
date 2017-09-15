@@ -2,6 +2,7 @@ package org.jusecase.ui.opengl.render;
 
 import org.jusecase.scenegraph.Image;
 import org.jusecase.scenegraph.Quad;
+import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.texture.TexCoords;
 import org.lwjgl.BufferUtils;
 
@@ -37,6 +38,10 @@ class QuadBatch {
             {0, 0}
     };
 
+    private final float[] quadColor = {0, 0, 0, 0};
+
+    private static final int FLOAT_BYTES = 4;
+
     QuadBatch(int textureId) {
         this.textureId = textureId;
     }
@@ -64,18 +69,25 @@ class QuadBatch {
     }
 
     private void addVertices(Quad quad) {
-        transformQuadVertices(quad);
+        fillQuadVertices(quad);
+        fillQuadColor(quad);
 
         vertexBuffer.put(quadVertices[0]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put(quadVertices[3]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put(quadVertices[1]);
+        vertexBuffer.put(quadColor);
 
         vertexBuffer.put(quadVertices[1]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put(quadVertices[3]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put(quadVertices[2]);
+        vertexBuffer.put(quadColor);
     }
 
-    private void transformQuadVertices(Quad quad) {
+    private void fillQuadVertices(Quad quad) {
         quadVertices[0][0] = 0;
         quadVertices[0][1] = 0;
         quadVertices[1][0] = (float)quad.getWidth();
@@ -90,41 +102,55 @@ class QuadBatch {
         }
     }
 
+    private void fillQuadColor(Quad quad) {
+        Color color = quad.getColor();
+        quadColor[0] = (float)color.getRed();
+        quadColor[1] = (float)color.getGreen();
+        quadColor[2] = (float)color.getBlue();
+        quadColor[3] = (float)color.getAlpha();
+    }
+
     private void addVertices(Image image) {
-        transformQuadVertices(image);
+        fillQuadVertices(image);
+        fillQuadColor(image);
 
         TexCoords texCoords = image.getTexture().getTexCoords();
 
         vertexBuffer.put(quadVertices[0]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put((float)texCoords.left).put((float)texCoords.top);
         vertexBuffer.put(quadVertices[3]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put((float)texCoords.left).put((float)texCoords.bottom);
         vertexBuffer.put(quadVertices[1]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put((float)texCoords.right).put((float)texCoords.top);
 
-
         vertexBuffer.put(quadVertices[1]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put((float)texCoords.right).put((float)texCoords.top);
         vertexBuffer.put(quadVertices[3]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put((float)texCoords.left).put((float)texCoords.bottom);
         vertexBuffer.put(quadVertices[2]);
+        vertexBuffer.put(quadColor);
         vertexBuffer.put((float)texCoords.right).put((float)texCoords.bottom);
     }
 
     void draw() {
         glBindVertexArray(vaoId);
 
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
         if (textureId == 0) {
-            glEnableVertexAttribArray(0);
-            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 2);
-            glDisableVertexAttribArray(0);
+            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 6);
         } else {
-            glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 4);
-            glDisableVertexAttribArray(1);
-            glDisableVertexAttribArray(0);
+            glEnableVertexAttribArray(2);
+            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 8);
+            glDisableVertexAttribArray(2);
         }
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
 
         glBindVertexArray(0);
 
@@ -170,11 +196,12 @@ class QuadBatch {
             glBindBuffer(GL_ARRAY_BUFFER, vboId);
             glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_DYNAMIC_DRAW);
             if (textureId == 0) {
-                glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, 0);
+                glVertexAttribPointer(0, 2, GL_FLOAT, false, 6 * FLOAT_BYTES, 0);
+                glVertexAttribPointer(1, 4, GL_FLOAT, false, 6 * FLOAT_BYTES, 2 * FLOAT_BYTES);
             } else {
-                // 4 bytes per float
-                glVertexAttribPointer(0, 2, GL_FLOAT, false, 4*4, 0);
-                glVertexAttribPointer(1, 2, GL_FLOAT, false, 4*4, 2*4);
+                glVertexAttribPointer(0, 2, GL_FLOAT, false, 8 * FLOAT_BYTES, 0);
+                glVertexAttribPointer(1, 4, GL_FLOAT, false, 8 * FLOAT_BYTES, 2 * FLOAT_BYTES);
+                glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * FLOAT_BYTES, 6 * FLOAT_BYTES);
             }
 
             glBindVertexArray(0);
@@ -193,11 +220,11 @@ class QuadBatch {
     }
 
     private int getRequiredCapacity() {
-        int oneElement = 2 * 6;
+        int oneElement = 2 + 4;
         if (textureId > 0) {
-            oneElement += 2 * 6;
+            oneElement += 2;
         }
-        return oneElement * quads.size();
+        return oneElement * 6 * quads.size();
     }
 
     void dispose() {
