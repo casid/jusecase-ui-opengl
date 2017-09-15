@@ -65,7 +65,9 @@ class QuadBatch {
     }
 
     private int hash(Quad quad) {
-        return quad.getGlobalMatrix().hashCode();
+        int result = quad.getGlobalMatrix().hashCode();
+        result = 31 * result + quad.getColor().hashCode();
+        return result;
     }
 
     private void addVertices(Quad quad) {

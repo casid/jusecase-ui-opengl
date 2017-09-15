@@ -96,11 +96,11 @@ public class Playground {
             style.hovered.setTexture(texture).setColor(new Color("#0f0"));
             style.pressed.setTexture(texture).setColor(new Color("#f00"));
 
-            for (int i = 0; i < 10; ++i) {
+            for (int i = 0; i < 200; ++i) {
                 Button textureButton = new Button();
 
                 textureButton.setStyle(style);
-                ui.addFirst(textureButton.setX(10 + Math.min(i, 400)).setY(300));
+                ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
