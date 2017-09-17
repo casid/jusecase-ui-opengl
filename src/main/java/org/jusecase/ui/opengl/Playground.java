@@ -3,6 +3,7 @@ package org.jusecase.ui.opengl;
 import org.jusecase.scenegraph.Image;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.texture.Texture;
+import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureLoader;
 import org.jusecase.ui.Ui;
 import org.jusecase.scenegraph.color.Color;
@@ -10,6 +11,7 @@ import org.jusecase.ui.elements.Button;
 import org.jusecase.ui.opengl.render.SimpleRenderer;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.ui.opengl.render.VboRenderer;
+import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 import org.jusecase.ui.style.ImageButtonStyle;
 import org.jusecase.ui.style.QuadButtonStyle;
@@ -85,25 +87,25 @@ public class Playground {
         moveableButton.add(moveableButtonChild2.setX(120).setY(120).setWidth(20).setHeight(20));
 
         TextureLoader textureLoader = new StbiTextureLoader();
-        try {
-            Texture texture = textureLoader.load("images/0000_poisondagger_128.jpg");
-            Image image = new Image();
-            image.setTexture(texture);
-            ui.addFirst(image.setX(200).setY(200));
+        StarlingTextureAtlasLoader textureAtlasLoader = new StarlingTextureAtlasLoader(textureLoader);
 
-            ImageButtonStyle style = new ImageButtonStyle();
-            style.active.setTexture(texture);
-            style.hovered.setTexture(texture).setColor(new Color("#0f0"));
-            style.pressed.setTexture(texture).setColor(new Color("#f00"));
+        TextureAtlas textureAtlas = textureAtlasLoader.load("images/atlas.xml");
 
-            for (int i = 0; i < 200; ++i) {
-                Button textureButton = new Button();
+        Texture texture = textureAtlas.get("tower-inventory-potions-iu");
+        Image image = new Image();
+        image.setTexture(texture);
+        ui.addFirst(image.setX(200).setY(200));
 
-                textureButton.setStyle(style);
-                ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        ImageButtonStyle style = new ImageButtonStyle();
+        style.active.setTexture(texture);
+        style.hovered.setTexture(texture).setColor(new Color("#0f0"));
+        style.pressed.setTexture(texture).setColor(new Color("#f00"));
+
+        for (int i = 0; i < 200; ++i) {
+            Button textureButton = new Button();
+
+            textureButton.setStyle(style);
+            ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300));
         }
     }
 

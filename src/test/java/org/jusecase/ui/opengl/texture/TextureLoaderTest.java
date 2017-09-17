@@ -17,25 +17,25 @@ public abstract class TextureLoaderTest {
     protected TextureLoader textureLoader;
 
     @Test
-    public void loadStream() throws IOException {
+    public void loadStream() {
         Texture texture = (Texture)textureLoader.load(an(inputStream().withResource(REFERENCE_IMAGE)));
         thenReferenceImageWasLoadedCorrectly(texture);
     }
 
     @Test
-    public void loadFilePath() throws IOException, URISyntaxException {
+    public void loadFilePath() {
         Texture texture = (Texture)textureLoader.load(a(path().withResource(REFERENCE_IMAGE)));
         thenReferenceImageWasLoadedCorrectly(texture);
     }
 
     @Test
-    public void loadFileString() throws IOException, URISyntaxException {
+    public void loadFileString() {
         Texture texture = (Texture)textureLoader.load(REFERENCE_IMAGE);
         thenReferenceImageWasLoadedCorrectly(texture);
     }
 
-    @Test(expected = NoSuchFileException.class)
-    public void loadFile_notFound() throws IOException, URISyntaxException {
+    @Test(expected = RuntimeException.class)
+    public void loadFile_notFound() {
         textureLoader.load(Paths.get("images/unknown.jpg"));
     }
 
