@@ -106,9 +106,9 @@ class QuadBatch {
 
     private void fillQuadColor(Quad quad) {
         Color color = quad.getColor();
-        quadColor[0] = (float)color.getRed();
-        quadColor[1] = (float)color.getGreen();
-        quadColor[2] = (float)color.getBlue();
+        quadColor[0] = (float)(color.getRed() * color.getAlpha());
+        quadColor[1] = (float)(color.getGreen() * color.getAlpha());
+        quadColor[2] = (float)(color.getBlue() * color.getAlpha());
         quadColor[3] = (float)color.getAlpha();
     }
 

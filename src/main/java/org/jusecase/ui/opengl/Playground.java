@@ -56,7 +56,11 @@ public class Playground {
     private void init() {
         mouseInputProcessor = new MouseInputProcessor(window);
 
-        ui.setDefaultStyle(Button.class, new QuadButtonStyle());
+        QuadButtonStyle buttonStyle = new QuadButtonStyle();
+        buttonStyle.active.setColor(new Color("#fff", 0.5));
+        buttonStyle.hovered.setColor(new Color("#f0f", 0.5));
+        buttonStyle.pressed.setColor(new Color("#fff", 0.5));
+        ui.setDefaultStyle(Button.class, buttonStyle);
 
         button.setX(100).setY(100).setWidth(200).setHeight(50);
         button.onClick.add(e -> {
@@ -129,7 +133,7 @@ public class Playground {
         GL.createCapabilities();
 
         // Set the clear color
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.

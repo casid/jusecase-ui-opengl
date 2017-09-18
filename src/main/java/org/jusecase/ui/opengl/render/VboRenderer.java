@@ -12,8 +12,7 @@ import org.jusecase.ui.opengl.shader.stage.VertexShader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.*;
 
 public class VboRenderer implements Renderer {
     private int currentTextureId;
@@ -104,6 +103,9 @@ public class VboRenderer implements Renderer {
 
     @Override
     public void end() {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
         for (QuadBatch batch : batches) {
             if (batch.getTextureId() > 0) {
                 imageShader.use();
