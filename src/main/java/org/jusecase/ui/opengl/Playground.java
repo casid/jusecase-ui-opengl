@@ -77,12 +77,7 @@ public class Playground {
 
         Button moveableButton = new Button();
         ui.add(moveableButton.setX(120).setY(120).setWidth(200).setHeight(200).setRotation(20));
-        moveableButton.onTouch.add(touchEvent -> {
-            if (moveableButton.isPressed() && touchEvent.phase == TouchPhase.Move) {
-                moveableButton.setX(moveableButton.getX() + touchEvent.deltaX);
-                moveableButton.setY(moveableButton.getY() + touchEvent.deltaY);
-            }
-        });
+        moveableButton.onTouch.add(this::dragButton);
 
         Button moveableButtonChild = new Button();
         moveableButton.add(moveableButtonChild.setX(120).setY(120).setWidth(20).setHeight(20).setRotation(45).setScaleX(10).setScaleY(2));
@@ -107,9 +102,19 @@ public class Playground {
 
         for (int i = 0; i < 200; ++i) {
             Button textureButton = new Button();
+            textureButton.onTouch.add(this::dragButton);
 
             textureButton.setStyle(style);
             ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300));
+        }
+    }
+
+    private void dragButton(TouchEvent touchEvent) {
+        Button button = (Button) touchEvent.element;
+
+        if (button.isPressed() && touchEvent.phase == TouchPhase.Move) {
+            button.setX(button.getX() + touchEvent.deltaX);
+            button.setY(button.getY() + touchEvent.deltaY);
         }
     }
 
