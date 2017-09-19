@@ -166,14 +166,11 @@ class QuadBatch {
     void upload() {
         int requiredCapacity = getRequiredCapacity();
         if (vertexBuffer == null) {
-            System.out.println("Create buffer");
             vertexBuffer = BufferUtils.createFloatBuffer(requiredCapacity);
         } else {
             if (vertexBuffer.capacity() < requiredCapacity) {
-                System.out.println("Resize buffer");
                 vertexBuffer = BufferUtils.createFloatBuffer(requiredCapacity);
             } else {
-                System.out.println("Uploading buffer");
                 vertexBuffer.clear();
             }
         }

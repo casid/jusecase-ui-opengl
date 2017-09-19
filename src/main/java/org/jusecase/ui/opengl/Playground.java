@@ -41,6 +41,7 @@ public class Playground {
     private Renderer paintersAlgorithmRenderer = new PaintersAlgorithmRenderer(simpleRenderer);
 
     private long window;
+    private Image image;
 
     public static void main(String[] args) {
         new Playground().run();
@@ -91,9 +92,9 @@ public class Playground {
         TextureAtlas textureAtlas = textureAtlasLoader.load("images/atlas.xml");
 
         Texture texture = textureAtlas.get("tower-inventory-potions-iu");
-        Image image = new Image();
+        image = new Image();
         image.setTexture(texture);
-        ui.addFirst(image.setX(200).setY(200));
+        ui.addFirst(image.setX(200).setY(200).setPivot(0.5, 0.5));
 
         ImageButtonStyle style = new ImageButtonStyle();
         style.active.setTexture(texture);
@@ -103,9 +104,12 @@ public class Playground {
         for (int i = 0; i < 200; ++i) {
             Button textureButton = new Button();
             textureButton.onTouch.add(this::dragButton);
+            textureButton.onClick.add(e -> {
+                e.button.setRotation(e.button.getRotation() + 10);
+            });
 
             textureButton.setStyle(style);
-            ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300));
+            ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300).setPivot(0.5, 0.5).setRotation(Math.random() * 45));
         }
     }
 
@@ -119,6 +123,8 @@ public class Playground {
     }
 
     private void update() {
+        image.setRotation(image.getRotation() + 1);
+
         TouchEvent event = mouseInputProcessor.poll();
         if (event != null) {
             ui.process(event);
