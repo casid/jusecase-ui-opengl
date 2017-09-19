@@ -1,6 +1,7 @@
 package org.jusecase.ui.opengl;
 
 import org.jusecase.scenegraph.Image;
+import org.jusecase.scenegraph.Image3Slice;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
@@ -8,7 +9,6 @@ import org.jusecase.scenegraph.texture.TextureLoader;
 import org.jusecase.ui.Ui;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.ui.elements.Button;
-import org.jusecase.ui.opengl.render.SimpleRenderer;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.ui.opengl.render.VboRenderer;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
@@ -22,7 +22,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import java.io.IOException;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -92,14 +91,13 @@ public class Playground {
         TextureAtlas textureAtlas = textureAtlasLoader.load("images/atlas.xml");
 
         Texture texture = textureAtlas.get("tower-inventory-potions-iu");
-        image = new Image();
-        image.setTexture(texture);
+        image = new Image(texture);
         ui.addFirst(image.setX(200).setY(200).setPivot(0.5, 0.5));
 
         ImageButtonStyle style = new ImageButtonStyle();
-        style.active.setTexture(texture);
-        style.hovered.setTexture(texture).setColor(new Color("#0f0"));
-        style.pressed.setTexture(texture).setColor(new Color("#f00"));
+        style.active = new Image(texture);
+        style.hovered = (Image)new Image(texture).setColor(new Color("#0f0"));
+        style.pressed = (Image)new Image(texture).setColor(new Color("#f00"));
 
         for (int i = 0; i < 200; ++i) {
             Button textureButton = new Button();
@@ -111,6 +109,9 @@ public class Playground {
             textureButton.setStyle(style);
             ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300).setPivot(0.5, 0.5).setRotation(Math.random() * 45));
         }
+
+        Image3Slice image3Slice = new Image3Slice(textureAtlas, "tower-skill-button-cooldown-left", "tower-skill-button-cooldown-center", "tower-skill-button-cooldown-right");
+        ui.add(image3Slice.setPosition(400, 300).setWidth(200));
     }
 
     private void dragButton(TouchEvent touchEvent) {
@@ -144,7 +145,7 @@ public class Playground {
         GL.createCapabilities();
 
         // Set the clear color
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
