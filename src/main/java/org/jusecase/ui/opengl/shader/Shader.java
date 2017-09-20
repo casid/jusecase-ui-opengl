@@ -97,13 +97,9 @@ public class Shader {
             glLinkProgram(id);
 
             int linked = glGetProgrami(id, GL_LINK_STATUS);
-            String programLog = glGetProgramInfoLog(id);
-            if (programLog.trim().length() > 0) {
-                System.err.println(programLog);
-            }
-
             if (linked == 0) {
-                throw new AssertionError("Could not link program");
+                String programLog = glGetProgramInfoLog(id);
+                throw new AssertionError("Could not link program: " + programLog);
             }
         }
     }
