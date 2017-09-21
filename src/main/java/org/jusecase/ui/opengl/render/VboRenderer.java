@@ -17,17 +17,17 @@ import static org.lwjgl.opengl.GL11.*;
 public class VboRenderer implements Renderer {
     private int currentTextureId;
 
-    private List<QuadBatch> batches = new ArrayList<>();
+    private final List<QuadBatch> batches = new ArrayList<>();
     private int currentBatchIndex = -1;
 
     private Shader quadShader;
     private Shader imageShader;
 
-    private Matrix3x2 projection;
+    private final Matrix3x2 projection = new Matrix3x2();
 
     @Override
     public void begin() {
-        projection = Matrix3x2.orthoProjection(800, 600);
+        Matrix3x2.orthoProjection(800, 600, projection);
 
         currentTextureId = -1;
 

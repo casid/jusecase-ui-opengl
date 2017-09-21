@@ -78,6 +78,9 @@ public class Playground {
         Button moveableButton = new Button();
         ui.add(moveableButton.setX(120).setY(120).setWidth(200).setHeight(200).setRotation(20));
         moveableButton.onTouch.add(this::dragButton);
+        moveableButton.onClick.add(e -> {
+            System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
+        });
 
         Button moveableButtonChild = new Button();
         moveableButton.add(moveableButtonChild.setX(120).setY(120).setWidth(20).setHeight(20).setRotation(45).setScaleX(10).setScaleY(2));
