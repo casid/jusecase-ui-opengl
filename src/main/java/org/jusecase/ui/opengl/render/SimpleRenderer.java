@@ -94,7 +94,7 @@ public class SimpleRenderer implements Renderer {
 
     private void setColor(Color color) {
         if (!color.equals(currentColor)) {
-            glColor4d(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+            glColor4d(color.r, color.g, color.b, color.a);
             currentColor = color;
         }
     }

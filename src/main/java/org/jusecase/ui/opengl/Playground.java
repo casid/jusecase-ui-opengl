@@ -57,15 +57,15 @@ public class Playground {
         mouseInputProcessor = new MouseInputProcessor(window);
 
         QuadButtonStyle buttonStyle = new QuadButtonStyle();
-        buttonStyle.active.setColor(new Color("#fff", 0.5));
-        buttonStyle.hovered.setColor(new Color("#f0f", 0.5));
-        buttonStyle.pressed.setColor(new Color("#fff", 0.5));
+        buttonStyle.active.setColor(new Color("#fff", 0.5f));
+        buttonStyle.hovered.setColor(new Color("#f0f", 0.5f));
+        buttonStyle.pressed.setColor(new Color("#fff", 0.5f));
         ui.setDefaultStyle(Button.class, buttonStyle);
 
         button.setX(100).setY(100).setWidth(200).setHeight(50);
         button.onClick.add(e -> {
             QuadButtonStyle style = (QuadButtonStyle) button.getStyle();
-            Color color = new Color(Math.random(), Math.random(), Math.random());
+            Color color = new Color().random();
             style.active.setColor(color);
             style.hovered.setColor(color);
             System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
