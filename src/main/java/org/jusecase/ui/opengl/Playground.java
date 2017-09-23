@@ -13,6 +13,7 @@ import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.ui.opengl.render.VboRenderer;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
+import org.jusecase.ui.opengl.touch.MouseInputProcessor;
 import org.jusecase.ui.style.ImageButtonStyle;
 import org.jusecase.ui.style.QuadButtonStyle;
 import org.jusecase.ui.touch.TouchEvent;

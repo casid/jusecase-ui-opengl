@@ -1,4 +1,4 @@
-package org.jusecase.ui.opengl;
+package org.jusecase.ui.opengl.touch;
 
 import org.jusecase.ui.touch.TouchEvent;
 import org.jusecase.ui.touch.TouchPhase;
