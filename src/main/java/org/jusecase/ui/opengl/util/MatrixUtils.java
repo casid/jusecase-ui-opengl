@@ -1,8 +1,8 @@
-package org.jusecase.ui.opengl;
+package org.jusecase.ui.opengl.util;
 
 import org.jusecase.scenegraph.math.Matrix3x2;
 
-public class Matrix {
+public class MatrixUtils {
     private static final double[] TEMP_MATRIX_4X4 = new double[16];
     private static final float[] TEMP_MATRIX_4X4f = new float[16];
 

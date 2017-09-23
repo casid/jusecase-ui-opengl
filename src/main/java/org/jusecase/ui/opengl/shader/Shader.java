@@ -1,7 +1,7 @@
 package org.jusecase.ui.opengl.shader;
 
 import org.jusecase.scenegraph.math.Matrix3x2;
-import org.jusecase.ui.opengl.Matrix;
+import org.jusecase.ui.opengl.util.MatrixUtils;
 import org.jusecase.ui.opengl.shader.stage.FragmentShader;
 import org.jusecase.ui.opengl.shader.stage.VertexShader;
 
@@ -43,7 +43,7 @@ public class Shader {
 
     public void setUniform(String name, Matrix3x2 matrix) {
         int location = glGetUniformLocation(id, name);
-        glUniformMatrix4fv(location, false, Matrix.toOpenGlMatrix4f(matrix));
+        glUniformMatrix4fv(location, false, MatrixUtils.toOpenGlMatrix4f(matrix));
     }
 
     public static class ShaderBuilder {

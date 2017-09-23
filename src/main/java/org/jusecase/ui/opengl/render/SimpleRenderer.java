@@ -7,7 +7,7 @@ import org.jusecase.scenegraph.Quad;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.texture.TexCoords;
 import org.jusecase.scenegraph.texture.Texture;
-import org.jusecase.ui.opengl.Matrix;
+import org.jusecase.ui.opengl.util.MatrixUtils;
 import org.jusecase.scenegraph.render.Renderer;
 import org.lwjgl.opengl.GL11;
 
@@ -89,7 +89,7 @@ public class SimpleRenderer implements Renderer {
     }
 
     private void loadMatrix(Node2d node) {
-        GL11.glLoadMatrixd(Matrix.toOpenGlMatrix4d(node.getGlobalMatrix()));
+        GL11.glLoadMatrixd(MatrixUtils.toOpenGlMatrix4d(node.getGlobalMatrix()));
     }
 
     private void setColor(Color color) {
