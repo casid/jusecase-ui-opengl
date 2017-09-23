@@ -129,6 +129,22 @@ public class VboRenderer implements Renderer {
         }
     }
 
+    @Override
+    public void dispose() {
+        if (quadShader != null) {
+            quadShader.dispose();
+        }
+
+        if (imageShader != null) {
+            imageShader.dispose();
+        }
+
+        for (QuadBatch batch : batches) {
+            batch.dispose();
+        }
+        batches.clear();
+    }
+
     private void renderQuad(Quad node) {
         QuadBatch batch = getBatch(node, 0);
         batch.addQuad(node);

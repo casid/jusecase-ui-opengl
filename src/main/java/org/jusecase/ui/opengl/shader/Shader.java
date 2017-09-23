@@ -12,29 +12,13 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Shader {
     private final int id;
-    private final VertexShader vertexShader;
-    private final FragmentShader fragmentShader;
 
     public static ShaderBuilder create() {
         return new ShaderBuilder();
     }
 
-    private Shader(int id, VertexShader vertexShader, FragmentShader fragmentShader) {
+    private Shader(int id) {
         this.id = id;
-        this.vertexShader = vertexShader;
-        this.fragmentShader = fragmentShader;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public VertexShader getVertexShader() {
-        return vertexShader;
-    }
-
-    public FragmentShader getFragmentShader() {
-        return fragmentShader;
     }
 
     public void use() {
@@ -46,22 +30,39 @@ public class Shader {
         glUniformMatrix4fv(location, false, MatrixUtils.toOpenGlMatrix4f(matrix));
     }
 
+    public void dispose() {
+        glUseProgram(0);
+        glDeleteProgram(id);
+    }
+
     public static class ShaderBuilder {
         private int id;
         private VertexShader vertexShader;
         private FragmentShader fragmentShader;
+        private boolean disposeVertexShaderAfterLinking;
+        private boolean disposeFragmentShaderAfterLinking;
         private Map<Integer, String> attributeLocations = new HashMap<>();
 
         private ShaderBuilder() {
         }
 
         public ShaderBuilder withVertexShader(VertexShader vertexShader) {
-            this.vertexShader = vertexShader;
-            return this;
+            return this.withVertexShader(vertexShader, true);
         }
 
         public ShaderBuilder withFragmentShader(FragmentShader fragmentShader) {
+            return this.withFragmentShader(fragmentShader, true);
+        }
+
+        public ShaderBuilder withVertexShader(VertexShader vertexShader, boolean disposeAfterLinking) {
+            this.vertexShader = vertexShader;
+            this.disposeVertexShaderAfterLinking = disposeAfterLinking;
+            return this;
+        }
+
+        public ShaderBuilder withFragmentShader(FragmentShader fragmentShader, boolean disposeAfterLinking) {
             this.fragmentShader = fragmentShader;
+            this.disposeFragmentShaderAfterLinking = disposeAfterLinking;
             return this;
         }
 
@@ -73,8 +74,9 @@ public class Shader {
         public Shader build() {
             create();
             link();
+            disposeTemporaryResources();
 
-            return new Shader(id, vertexShader, fragmentShader);
+            return new Shader(id);
         }
 
         private void create() {
@@ -100,6 +102,15 @@ public class Shader {
             if (linked == 0) {
                 String programLog = glGetProgramInfoLog(id);
                 throw new AssertionError("Could not link program: " + programLog);
+            }
+        }
+
+        private void disposeTemporaryResources() {
+            if (disposeVertexShaderAfterLinking) {
+                vertexShader.dispose();
+            }
+            if (disposeFragmentShaderAfterLinking) {
+                fragmentShader.dispose();
             }
         }
     }

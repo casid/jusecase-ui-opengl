@@ -37,6 +37,11 @@ public class SimpleRenderer implements Renderer {
     }
 
     @Override
+    public void dispose() {
+
+    }
+
+    @Override
     public void render(Node node) {
         ++amount;
 
