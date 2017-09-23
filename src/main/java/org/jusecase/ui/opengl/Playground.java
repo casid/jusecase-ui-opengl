@@ -71,7 +71,7 @@ public class Playground {
             System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
 
             Button randomButton = new Button();
-            button.add(randomButton.setPosition(800 * Math.random(), 600 * Math.random()).setSize(20, 20).setRotation(90 * Math.random()));
+            button.add(randomButton.setPosition(800 * (float)Math.random(), 600 * (float)Math.random()).setSize(20, 20).setRotation(90 * (float)Math.random()));
         });
         ui.add(button);
 
@@ -95,7 +95,7 @@ public class Playground {
 
         Texture texture = textureAtlas.get("tower-inventory-potions-iu");
         image = new Image(texture);
-        ui.addFirst(image.setX(200).setY(200).setPivot(0.5, 0.5));
+        ui.addFirst(image.setX(200).setY(200).setPivot(0.5f, 0.5f));
 
         ImageButtonStyle style = new ImageButtonStyle();
         style.active = new Image(texture);
@@ -110,7 +110,7 @@ public class Playground {
             });
 
             textureButton.setStyle(style);
-            ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300).setPivot(0.5, 0.5).setRotation(Math.random() * 45));
+            ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300).setPivot(0.5f, 0.5f).setRotation((float)Math.random() * 45));
         }
 
         Image3Slice image3Slice = new Image3Slice(textureAtlas, "tower-skill-button-cooldown-left", "tower-skill-button-cooldown-center", "tower-skill-button-cooldown-right");

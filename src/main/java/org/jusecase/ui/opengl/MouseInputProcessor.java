@@ -39,15 +39,15 @@ public class MouseInputProcessor {
             }
 
             if (!hasChanges) {
-                currentEvent.deltaX = x - currentEvent.x;
-                currentEvent.deltaY = y - currentEvent.y;
+                currentEvent.deltaX = (float)x - currentEvent.x;
+                currentEvent.deltaY = (float)y - currentEvent.y;
             } else {
-                currentEvent.deltaX += x - currentEvent.x;
-                currentEvent.deltaY += y - currentEvent.y;
+                currentEvent.deltaX += (float)x - currentEvent.x;
+                currentEvent.deltaY += (float)y - currentEvent.y;
             }
 
-            currentEvent.x = x;
-            currentEvent.y = y;
+            currentEvent.x = (float)x;
+            currentEvent.y = (float)y;
             hasChanges = true;
         });
     }
