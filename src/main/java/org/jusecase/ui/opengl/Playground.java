@@ -62,9 +62,7 @@ public class Playground extends LwjglApplication {
         for (int i = 0; i < 200; ++i) {
             Button textureButton = new Button();
             textureButton.onTouch.add(this::dragButton);
-            textureButton.onClick.add(button -> {
-                button.setRotation(button.getRotation() + 10);
-            });
+            textureButton.onClick.add(button -> button.setRotation(button.getRotation() + 10));
 
             textureButton.setStyle(style);
             ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300).setPivot(0.5f, 0.5f).setRotation((float)Math.random() * 45));
