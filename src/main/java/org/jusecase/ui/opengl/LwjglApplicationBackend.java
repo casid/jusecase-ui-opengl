@@ -1,6 +1,7 @@
 package org.jusecase.ui.opengl;
 
 import org.jusecase.Application;
+import org.jusecase.ApplicationBackend;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.ui.opengl.render.VboRenderer;
@@ -15,32 +16,47 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public abstract class LwjglApplication extends Application {
+public class LwjglApplicationBackend implements ApplicationBackend {
+
+    private final Application application;
 
     private long window;
 
     private MouseInputProcessor mouseInputProcessor;
 
-    @Override
+    protected LwjglApplicationBackend(Application application) {
+        this.application = application;
+    }
+
     protected Renderer createRenderer() {
         return new PaintersAlgorithmRenderer(new VboRenderer());
     }
 
 
-    @Override
+    private Renderer renderer;
+
+
+    protected void render() {
+        application.render(renderer);
+    }
+
+    protected void dispose() {
+        renderer.dispose();
+        application.dispose();
+    }
+
     public void start() {
-        super.start();
+        renderer = createRenderer();
 
         initWindow();
-        onStart();
+        application.init();
+
         loop();
+
         dispose();
         disposeWindow();
     }
@@ -58,7 +74,7 @@ public abstract class LwjglApplication extends Application {
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
-        while ( !glfwWindowShouldClose(window) ) {
+        while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             update();
@@ -75,9 +91,9 @@ public abstract class LwjglApplication extends Application {
     private void update() {
         TouchEvent event = mouseInputProcessor.poll();
         if (event != null) {
-            processTouch(event);
+            application.process(event);
         }
-        onUpdate();
+        application.update();
     }
 
 
@@ -106,8 +122,13 @@ public abstract class LwjglApplication extends Application {
 
         // Setup a key callback. It will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-                glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
+                exit();
+            }
+        });
+
+        glfwSetWindowSizeCallback(window, (window, width, height) -> {
+
         });
 
         // Get the thread stack and push a new frame
@@ -148,5 +169,10 @@ public abstract class LwjglApplication extends Application {
         // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+    }
+
+    @Override
+    public void exit() {
+        glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
     }
 }

@@ -1,11 +1,14 @@
 package org.jusecase.ui.opengl;
 
+import org.jusecase.Application;
 import org.jusecase.scenegraph.Image;
 import org.jusecase.scenegraph.Image3Slice;
+import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureLoader;
 import org.jusecase.scenegraph.color.Color;
+import org.jusecase.ui.Ui;
 import org.jusecase.ui.elements.Button;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
@@ -14,26 +17,40 @@ import org.jusecase.ui.style.QuadButtonStyle;
 import org.jusecase.ui.touch.TouchEvent;
 import org.jusecase.ui.touch.TouchPhase;
 
-public class Playground extends LwjglApplication {
+public class Playground implements Application {
+
+    private Ui ui = new Ui();
 
     private Button button = new Button();
     private Image image;
+    private TextureAtlas textureAtlas;
+    private StarlingTextureAtlasLoader textureAtlasLoader;
 
     public static void main(String[] args) {
-        new Playground().start();
+        new LwjglApplicationBackend(new Playground()).start();
     }
 
 
     @Override
-    protected void onStart() {
+    public void init() {
         initStyles();
         addSampleButtons();
         addSampleImages();
     }
 
     @Override
-    protected void onUpdate() {
+    public void process(TouchEvent touchEvent) {
+        ui.process(touchEvent);
+    }
+
+    @Override
+    public void update() {
         image.setRotation(image.getRotation() + 1);
+    }
+
+    @Override
+    public void render(Renderer renderer) {
+        renderer.render(ui);
     }
 
     private void initStyles() {
@@ -45,10 +62,10 @@ public class Playground extends LwjglApplication {
     }
 
     private void addSampleImages() {
-        TextureLoader textureLoader = new StbiTextureLoader();
-        StarlingTextureAtlasLoader textureAtlasLoader = new StarlingTextureAtlasLoader(textureLoader);
+        // TODO inject concrete implementations!
+        textureAtlasLoader = new StarlingTextureAtlasLoader(new StbiTextureLoader());
 
-        TextureAtlas textureAtlas = textureAtlasLoader.load("images/atlas.xml");
+        textureAtlas = textureAtlasLoader.load("images/atlas.xml");
 
         Texture texture = textureAtlas.get("tower-inventory-potions-iu");
         image = new Image(texture);
@@ -107,5 +124,10 @@ public class Playground extends LwjglApplication {
             button.setX(button.getX() + touchEvent.deltaX);
             button.setY(button.getY() + touchEvent.deltaY);
         }
+    }
+
+    @Override
+    public void dispose() {
+        textureAtlas.dispose();
     }
 }
