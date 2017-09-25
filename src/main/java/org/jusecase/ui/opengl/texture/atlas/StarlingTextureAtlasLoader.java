@@ -2,6 +2,7 @@ package org.jusecase.ui.opengl.texture.atlas;
 
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
+import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.scenegraph.texture.TextureLoader;
 import org.jusecase.ui.opengl.util.PathUtils;
 import org.xml.sax.Attributes;
@@ -12,7 +13,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.nio.file.Path;
 
-public class StarlingTextureAtlasLoader {
+public class StarlingTextureAtlasLoader implements TextureAtlasLoader {
 
     private final TextureLoader textureLoader;
 
@@ -20,6 +21,7 @@ public class StarlingTextureAtlasLoader {
         this.textureLoader = textureLoader;
     }
 
+    @Override
     public TextureAtlas load(Path definitionPath) {
         Loader loader = new Loader(definitionPath.getParent());
 
@@ -33,6 +35,7 @@ public class StarlingTextureAtlasLoader {
         return loader.textureAtlas;
     }
 
+    @Override
     public TextureAtlas load(String definitionResource) {
         return load(PathUtils.fromResource(definitionResource));
     }

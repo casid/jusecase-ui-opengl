@@ -4,6 +4,7 @@ package org.jusecase.ui.opengl.texture.atlas;
 import org.junit.Test;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
+import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +13,7 @@ public class StarlingTextureAtlasLoaderTest {
 
     public static final String XML = "images/atlas.xml";
 
-    private StarlingTextureAtlasLoader loader = new StarlingTextureAtlasLoader(new StbiTextureLoader());
+    private TextureAtlasLoader loader = new StarlingTextureAtlasLoader(new StbiTextureLoader());
 
     private TextureAtlas atlas;
 

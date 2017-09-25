@@ -6,6 +6,7 @@ import org.jusecase.scenegraph.Image3Slice;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
+import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.scenegraph.texture.TextureLoader;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.ui.Ui;
@@ -24,7 +25,7 @@ public class Playground implements Application {
     private Button button = new Button();
     private Image image;
     private TextureAtlas textureAtlas;
-    private StarlingTextureAtlasLoader textureAtlasLoader;
+    private TextureAtlasLoader textureAtlasLoader;
 
     public static void main(String[] args) {
         new LwjglApplicationBackend(new Playground()).start();
