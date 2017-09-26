@@ -1,34 +1,42 @@
 package org.jusecase.ui.opengl;
 
 import org.jusecase.Application;
+import org.jusecase.ApplicationBackend;
+import org.jusecase.inject.Component;
 import org.jusecase.scenegraph.Image;
 import org.jusecase.scenegraph.Image3Slice;
+import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureAtlasLoader;
-import org.jusecase.scenegraph.texture.TextureLoader;
-import org.jusecase.scenegraph.color.Color;
 import org.jusecase.ui.Ui;
 import org.jusecase.ui.elements.Button;
-import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
-import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 import org.jusecase.ui.style.ImageButtonStyle;
 import org.jusecase.ui.style.QuadButtonStyle;
 import org.jusecase.ui.touch.TouchEvent;
 import org.jusecase.ui.touch.TouchPhase;
 
+import javax.inject.Inject;
+
+@Component
 public class Playground implements Application {
+
+    @Inject
+    private ApplicationBackend applicationBackend;
+
+    @Inject
+    private TextureAtlasLoader textureAtlasLoader;
 
     private Ui ui = new Ui();
 
     private Button button = new Button();
     private Image image;
     private TextureAtlas textureAtlas;
-    private TextureAtlasLoader textureAtlasLoader;
+
 
     public static void main(String[] args) {
-        new LwjglApplicationBackend(new Playground()).start();
+        new LwjglApplicationBackend(Playground.class).start();
     }
 
 
@@ -63,9 +71,6 @@ public class Playground implements Application {
     }
 
     private void addSampleImages() {
-        // TODO inject concrete implementations!
-        textureAtlasLoader = new StarlingTextureAtlasLoader(new StbiTextureLoader());
-
         textureAtlas = textureAtlasLoader.load("images/atlas.xml");
 
         Texture texture = textureAtlas.get("tower-inventory-potions-iu");
@@ -74,8 +79,8 @@ public class Playground implements Application {
 
         ImageButtonStyle style = new ImageButtonStyle();
         style.active = new Image(texture);
-        style.hovered = (Image)new Image(texture).setColor(new Color("#0f0"));
-        style.pressed = (Image)new Image(texture).setColor(new Color("#f00"));
+        style.hovered = (Image) new Image(texture).setColor(new Color("#0f0"));
+        style.pressed = (Image) new Image(texture).setColor(new Color("#f00"));
 
         for (int i = 0; i < 200; ++i) {
             Button textureButton = new Button();
@@ -83,7 +88,7 @@ public class Playground implements Application {
             textureButton.onClick.add(button -> button.setRotation(button.getRotation() + 10));
 
             textureButton.setStyle(style);
-            ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300).setPivot(0.5f, 0.5f).setRotation((float)Math.random() * 45));
+            ui.add(textureButton.setX(10 + Math.min(i, 200)).setY(300).setPivot(0.5f, 0.5f).setRotation((float) Math.random() * 45));
         }
 
         Image3Slice image3Slice = new Image3Slice(textureAtlas, "tower-skill-button-cooldown-left", "tower-skill-button-cooldown-center", "tower-skill-button-cooldown-right");
@@ -100,22 +105,21 @@ public class Playground implements Application {
             System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
 
             Button randomButton = new Button();
-            button.add(randomButton.setPosition(800 * (float)Math.random(), 600 * (float)Math.random()).setSize(20, 20).setRotation(90 * (float)Math.random()));
+            button.add(randomButton.setPosition(800 * (float) Math.random(), 600 * (float) Math.random()).setSize(20, 20).setRotation(90 * (float) Math.random()));
         });
         ui.add(button);
 
         Button moveableButton = new Button();
         ui.add(moveableButton.setX(120).setY(120).setWidth(200).setHeight(200).setRotation(20));
         moveableButton.onTouch.add(this::dragButton);
-        moveableButton.onClick.add(e -> {
-            System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
-        });
+        moveableButton.onClick.add(e -> System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
 
         Button moveableButtonChild = new Button();
         moveableButton.add(moveableButtonChild.setX(120).setY(120).setWidth(20).setHeight(20).setRotation(45).setScaleX(10).setScaleY(2));
 
         Button moveableButtonChild2 = new Button();
         moveableButton.add(moveableButtonChild2.setX(120).setY(120).setWidth(20).setHeight(20));
+        moveableButtonChild2.onClick.add(b -> applicationBackend.exit());
     }
 
     private void dragButton(TouchEvent touchEvent) {

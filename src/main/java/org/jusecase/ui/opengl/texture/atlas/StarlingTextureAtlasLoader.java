@@ -1,5 +1,6 @@
 package org.jusecase.ui.opengl.texture.atlas;
 
+import org.jusecase.inject.Component;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureAtlasLoader;
@@ -9,17 +10,16 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.inject.Inject;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.nio.file.Path;
 
+@Component
 public class StarlingTextureAtlasLoader implements TextureAtlasLoader {
 
-    private final TextureLoader textureLoader;
-
-    public StarlingTextureAtlasLoader(TextureLoader textureLoader) {
-        this.textureLoader = textureLoader;
-    }
+    @Inject
+    private TextureLoader textureLoader;
 
     @Override
     public TextureAtlas load(Path definitionPath) {

@@ -1,5 +1,6 @@
 package org.jusecase.ui.opengl.texture.stbi;
 
+import org.jusecase.inject.Component;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureLoader;
 import org.jusecase.ui.opengl.util.PathUtils;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import static org.jusecase.ui.opengl.util.ByteBufferUtils.from;
 import static org.lwjgl.stb.STBImage.stbi_load_from_memory;
 
+@Component
 public class StbiTextureLoader implements TextureLoader {
 
     @Override

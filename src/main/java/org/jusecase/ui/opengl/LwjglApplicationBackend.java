@@ -2,9 +2,12 @@ package org.jusecase.ui.opengl;
 
 import org.jusecase.Application;
 import org.jusecase.ApplicationBackend;
+import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.ui.opengl.render.VboRenderer;
+import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
+import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 import org.jusecase.ui.opengl.touch.MouseInputProcessor;
 import org.jusecase.ui.touch.TouchEvent;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -22,14 +25,15 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class LwjglApplicationBackend implements ApplicationBackend {
 
-    private final Application application;
+    private Class<? extends Application> applicationClass;
+    private Application application;
 
     private long window;
 
     private MouseInputProcessor mouseInputProcessor;
 
-    protected LwjglApplicationBackend(Application application) {
-        this.application = application;
+    protected LwjglApplicationBackend(Class<? extends Application> applicationClass) {
+        this.applicationClass = applicationClass;
     }
 
     protected Renderer createRenderer() {
@@ -50,9 +54,19 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     }
 
     public void start() {
+        initWindow();
         renderer = createRenderer();
 
-        initWindow();
+        Injector.getInstance().add(this);
+        Injector.getInstance().add(new StbiTextureLoader());
+        Injector.getInstance().add(new StarlingTextureAtlasLoader());
+
+        try {
+            application = applicationClass.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         application.init();
 
         loop();
