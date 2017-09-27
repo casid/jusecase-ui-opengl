@@ -1,8 +1,8 @@
 package org.jusecase.ui.opengl.texture.atlas;
 
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
@@ -10,18 +10,21 @@ import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StarlingTextureAtlasLoaderTest extends ComponentTest<StarlingTextureAtlasLoader> {
+public class StarlingTextureAtlasLoaderTest implements ComponentTest {
 
     public static final String XML = "images/atlas.xml";
 
-    @Before
+    private StarlingTextureAtlasLoader loader;
+
+    @BeforeEach
     public void setUp() {
         givenDependency(new StbiTextureLoader());
+        loader = new StarlingTextureAtlasLoader();
     }
 
     @Test
     public void load() {
-        TextureAtlas atlas = getComponent().load(XML);
+        TextureAtlas atlas = loader.load(XML);
 
         Texture texture = atlas.get("player_level_up");
         assertThat(texture.getWidth()).isEqualTo(280);

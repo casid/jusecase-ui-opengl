@@ -1,6 +1,6 @@
 package org.jusecase.ui.opengl.texture;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jusecase.scenegraph.texture.TextureLoader;
 
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.jusecase.Builders.*;
 
 public abstract class TextureLoaderTest {
@@ -34,9 +35,10 @@ public abstract class TextureLoaderTest {
         thenReferenceImageWasLoadedCorrectly(texture);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void loadFile_notFound() {
-        textureLoader.load(Paths.get("images/unknown.jpg"));
+        Throwable throwable = catchThrowable(() -> textureLoader.load(Paths.get("images/unknown.jpg")));
+        assertThat(throwable).isInstanceOf(RuntimeException.class);
     }
 
     private void thenReferenceImageWasLoadedCorrectly(Texture texture) {
