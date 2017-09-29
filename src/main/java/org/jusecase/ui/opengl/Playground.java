@@ -39,7 +39,6 @@ public class Playground implements Application {
         new LwjglApplicationBackend(Playground.class).start();
     }
 
-
     @Override
     public void init() {
         initStyles();
@@ -75,7 +74,7 @@ public class Playground implements Application {
 
         Texture texture = textureAtlas.get("tower-inventory-potions-iu");
         image = new Image(texture);
-        ui.addFirst(image.setX(200).setY(200).setPivot(0.5f, 0.5f));
+        ui.addFirst(image.setX(200).setY(0).setPivot(0.5f, 0.5f));
 
         ImageButtonStyle style = new ImageButtonStyle();
         style.active = new Image(texture);

@@ -1,5 +1,7 @@
 package org.jusecase.ui.opengl.render;
 
+import org.jusecase.ApplicationBackend;
+import org.jusecase.inject.Component;
 import org.jusecase.scenegraph.Image;
 import org.jusecase.scenegraph.Node;
 import org.jusecase.scenegraph.Quad;
@@ -9,12 +11,18 @@ import org.jusecase.ui.opengl.shader.Shader;
 import org.jusecase.ui.opengl.shader.stage.FragmentShader;
 import org.jusecase.ui.opengl.shader.stage.VertexShader;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 
+@Component
 public class VboRenderer implements Renderer {
+
+    @Inject
+    private ApplicationBackend applicationBackend;
+
     private int currentTextureId;
 
     private final List<QuadBatch> batches = new ArrayList<>();
@@ -23,12 +31,14 @@ public class VboRenderer implements Renderer {
     private Shader quadShader;
     private Shader imageShader;
 
-    private final Matrix3x2 projection = new Matrix3x2();
+    private Matrix3x2 projection;
+
+    public VboRenderer() {
+        applicationBackend.onResize().add(this::onResize);
+    }
 
     @Override
     public void begin() {
-        Matrix3x2.orthoProjection(800, 600, projection);
-
         currentTextureId = -1;
 
         if (quadShader == null) {
@@ -38,18 +48,18 @@ public class VboRenderer implements Renderer {
         if (imageShader == null) {
             imageShader = createShader(true);
         }
+
+        if (projection == null) {
+            projection = new Matrix3x2();
+            onResize(applicationBackend.getWidth(), applicationBackend.getHeight());
+        }
     }
 
     private Shader createShader(boolean texCoords) {
-        Shader shader = Shader.create()
+        return Shader.create()
                 .withVertexShader(new VertexShader(createVertexShaderSource(texCoords)))
                 .withFragmentShader(new FragmentShader(createFragmentShaderSource(texCoords)))
                 .build();
-
-        shader.use();
-        shader.setUniform("projection", projection);
-
-        return shader;
     }
 
     private String createVertexShaderSource(boolean texCoords) {
@@ -131,6 +141,8 @@ public class VboRenderer implements Renderer {
 
     @Override
     public void dispose() {
+        applicationBackend.onResize().remove(this::onResize);
+
         if (quadShader != null) {
             quadShader.dispose();
         }
@@ -153,6 +165,20 @@ public class VboRenderer implements Renderer {
     private void renderImage(Image node) {
         QuadBatch batch = getBatch(node, node.getTexture().getId());
         batch.addQuad(node);
+    }
+
+    private void onResize(int width, int height) {
+        Matrix3x2.orthoProjection(width, height, projection);
+
+        if (quadShader != null) {
+            quadShader.use();
+            quadShader.setUniform("projection", projection);
+        }
+
+        if (imageShader != null) {
+            imageShader.use();
+            imageShader.setUniform("projection", projection);
+        }
     }
 
     private QuadBatch getBatch(Quad quad, int textureId) {

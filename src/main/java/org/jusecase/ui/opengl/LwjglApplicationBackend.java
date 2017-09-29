@@ -5,10 +5,12 @@ import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.scenegraph.render.Renderer;
+import org.jusecase.signals.Signal;
 import org.jusecase.ui.opengl.render.VboRenderer;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 import org.jusecase.ui.opengl.touch.MouseInputProcessor;
+import org.jusecase.ui.signal.OnResize;
 import org.jusecase.ui.touch.TouchEvent;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -29,17 +31,16 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     private Application application;
 
     private long window;
+    private int width;
+    private int height;
 
     private MouseInputProcessor mouseInputProcessor;
+
+    private final Signal<OnResize> onResize = new Signal<>();
 
     protected LwjglApplicationBackend(Class<? extends Application> applicationClass) {
         this.applicationClass = applicationClass;
     }
-
-    protected Renderer createRenderer() {
-        return new PaintersAlgorithmRenderer(new VboRenderer());
-    }
-
 
     private Renderer renderer;
 
@@ -55,11 +56,12 @@ public class LwjglApplicationBackend implements ApplicationBackend {
 
     public void start() {
         initWindow();
-        renderer = createRenderer();
 
         Injector.getInstance().add(this);
         Injector.getInstance().add(new StbiTextureLoader());
         Injector.getInstance().add(new StarlingTextureAtlasLoader());
+
+        renderer = new PaintersAlgorithmRenderer(new VboRenderer());
 
         try {
             application = applicationClass.newInstance();
@@ -141,8 +143,12 @@ public class LwjglApplicationBackend implements ApplicationBackend {
             }
         });
 
-        glfwSetWindowSizeCallback(window, (window, width, height) -> {
+        glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+            this.width = width;
+            this.height = height;
+            glViewport(0, 0, this.width, this.height);
 
+            onResize.dispatch(s -> s.onResize(this.width, this.height));
         });
 
         // Get the thread stack and push a new frame
@@ -156,11 +162,14 @@ public class LwjglApplicationBackend implements ApplicationBackend {
             // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
+            width = pWidth.get(0);
+            height = pHeight.get(0);
+
             // Center the window
             glfwSetWindowPos(
                     window,
-                    (vidmode.width() - pWidth.get(0)) / 2,
-                    (vidmode.height() - pHeight.get(0)) / 2
+                    (vidmode.width() - width) / 2,
+                    (vidmode.height() - height) / 2
             );
         } // the stack frame is popped automatically
 
@@ -188,5 +197,20 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     @Override
     public void exit() {
         glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
+    public Signal<OnResize> onResize() {
+        return onResize;
     }
 }
