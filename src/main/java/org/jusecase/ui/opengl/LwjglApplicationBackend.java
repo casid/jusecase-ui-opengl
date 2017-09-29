@@ -144,10 +144,12 @@ public class LwjglApplicationBackend implements ApplicationBackend {
         });
 
         glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+            glViewport(0, 0, width, height);
+        });
+
+        glfwSetWindowSizeCallback(window, (window, width, height) -> {
             this.width = width;
             this.height = height;
-            glViewport(0, 0, this.width, this.height);
-
             onResize.dispatch(s -> s.onResize(this.width, this.height));
         });
 
@@ -171,6 +173,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
                     (vidmode.width() - width) / 2,
                     (vidmode.height() - height) / 2
             );
+
         } // the stack frame is popped automatically
 
         // Make the OpenGL context current
