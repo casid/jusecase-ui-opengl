@@ -3,6 +3,7 @@ package org.jusecase.ui.opengl;
 import org.jusecase.Application;
 import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Component;
+import org.jusecase.scenegraph.BitmapFontText;
 import org.jusecase.scenegraph.Image;
 import org.jusecase.scenegraph.Image3Slice;
 import org.jusecase.scenegraph.color.Color;
@@ -12,6 +13,8 @@ import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.ui.Ui;
 import org.jusecase.ui.elements.Button;
+import org.jusecase.ui.font.BitmapFont;
+import org.jusecase.ui.opengl.font.BitmapFontLoader;
 import org.jusecase.ui.style.ImageButtonStyle;
 import org.jusecase.ui.style.QuadButtonStyle;
 import org.jusecase.ui.touch.TouchEvent;
@@ -28,11 +31,15 @@ public class Playground implements Application {
     @Inject
     private TextureAtlasLoader textureAtlasLoader;
 
+    @Inject
+    private BitmapFontLoader bitmapFontLoader;
+
     private Ui ui = new Ui();
 
     private Button button = new Button();
     private Image image;
     private TextureAtlas textureAtlas;
+    private BitmapFont bitmapFont;
 
 
     public static void main(String[] args) {
@@ -44,6 +51,7 @@ public class Playground implements Application {
         initStyles();
         addSampleButtons();
         addSampleImages();
+        addSampleTexts();
     }
 
     @Override
@@ -119,6 +127,13 @@ public class Playground implements Application {
         Button moveableButtonChild2 = new Button();
         moveableButton.add(moveableButtonChild2.setX(120).setY(120).setWidth(20).setHeight(20));
         moveableButtonChild2.onClick.add(b -> applicationBackend.exit());
+    }
+
+    private void addSampleTexts() {
+        bitmapFont = bitmapFontLoader.load("fonts/font-comic.fnt");
+        BitmapFontText bitmapFontText = new BitmapFontText(bitmapFont);
+        bitmapFontText.setText("Hello world!");
+        ui.add(bitmapFontText);
     }
 
     private void dragButton(TouchEvent touchEvent) {
