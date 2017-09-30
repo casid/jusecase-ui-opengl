@@ -24,6 +24,8 @@ class BitmapFontLoaderTest implements ComponentTest {
     void loadFromResource() {
         font = loader.load("fonts/font-comic.fnt");
 
+        assertThat(font.getLineHeight()).isEqualTo(14);
+
         BitmapFontCharacter a = font.getCharacter('a');
         assertThat(a).isNotNull();
         assertThat(a.texture.getWidth()).isEqualTo(11);

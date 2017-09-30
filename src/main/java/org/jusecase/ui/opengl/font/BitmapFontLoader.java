@@ -40,7 +40,9 @@ public class BitmapFontLoader {
             throw new RuntimeException(e);
         }
 
-        return new BitmapFont(loader.characters, loader.kernings, loader.pages.values());
+        BitmapFont font = new BitmapFont(loader.characters, loader.kernings, loader.pages.values());
+        font.setLineHeight(loader.lineHeight);
+        return font;
     }
 
     private class Loader extends DefaultHandler {
@@ -49,6 +51,7 @@ public class BitmapFontLoader {
         private final Map<String, Texture> pages = new HashMap<>();
         private final List<BitmapFontCharacter> characters = new ArrayList<>();
         private final Map<String, Integer> kernings = new HashMap<>();
+        public int lineHeight;
 
         private Loader(Path directory) {
             this.directory = directory;
@@ -56,6 +59,10 @@ public class BitmapFontLoader {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            if ("common".equals(qName)) {
+                addCommon(attributes);
+            }
+
             if ("page".equals(qName)) {
                 addPage(attributes);
             }
@@ -67,6 +74,10 @@ public class BitmapFontLoader {
             if ("kerning".equals(qName)) {
                 addKerning(attributes);
             }
+        }
+
+        private void addCommon(Attributes attributes) {
+            lineHeight = Integer.parseInt(attributes.getValue("lineHeight"));
         }
 
         private void addPage(Attributes attributes) {

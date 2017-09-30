@@ -132,7 +132,7 @@ public class Playground implements Application {
     private void addSampleTexts() {
         bitmapFont = bitmapFontLoader.load("fonts/font-comic.fnt");
         BitmapFontText bitmapFontText = new BitmapFontText(bitmapFont);
-        bitmapFontText.setText("Hello world!");
+        bitmapFontText.setText("Hello world!\nHere comes line two...");
         ui.add(bitmapFontText);
     }
 
