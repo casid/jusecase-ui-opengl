@@ -40,6 +40,7 @@ public class Playground implements Application {
     private Image image;
     private TextureAtlas textureAtlas;
     private BitmapFont bitmapFont;
+    private Button moveableButton;
 
 
     public static void main(String[] args) {
@@ -116,7 +117,7 @@ public class Playground implements Application {
         });
         ui.add(button);
 
-        Button moveableButton = new Button();
+        moveableButton = new Button();
         ui.add(moveableButton.setX(120).setY(120).setWidth(200).setHeight(200).setRotation(20));
         moveableButton.onTouch.add(this::dragButton);
         moveableButton.onClick.add(e -> System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())));
@@ -133,7 +134,7 @@ public class Playground implements Application {
         bitmapFont = bitmapFontLoader.load("fonts/font-comic.fnt");
         BitmapFontText bitmapFontText = new BitmapFontText(bitmapFont);
         bitmapFontText.setText("Hello world!\nHere comes line two...");
-        ui.add(bitmapFontText);
+        moveableButton.add(bitmapFontText);
     }
 
     private void dragButton(TouchEvent touchEvent) {
