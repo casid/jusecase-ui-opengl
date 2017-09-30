@@ -13,6 +13,7 @@ import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.ui.Ui;
 import org.jusecase.ui.elements.Button;
+import org.jusecase.ui.font.Align;
 import org.jusecase.ui.font.BitmapFont;
 import org.jusecase.ui.opengl.font.BitmapFontLoader;
 import org.jusecase.ui.style.ImageButtonStyle;
@@ -133,6 +134,7 @@ public class Playground implements Application {
     private void addSampleTexts() {
         bitmapFont = bitmapFontLoader.load("fonts/font-comic.fnt");
         BitmapFontText bitmapFontText = new BitmapFontText(bitmapFont);
+        bitmapFontText.setAlign(Align.CENTER);
         bitmapFontText.setText("Hello world!\nHere comes line two...");
         moveableButton.add(bitmapFontText);
     }
