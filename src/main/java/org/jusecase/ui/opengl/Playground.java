@@ -3,7 +3,6 @@ package org.jusecase.ui.opengl;
 import org.jusecase.Application;
 import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Component;
-import org.jusecase.scenegraph.BitmapFontText;
 import org.jusecase.scenegraph.Image;
 import org.jusecase.scenegraph.Image3Slice;
 import org.jusecase.scenegraph.color.Color;
@@ -13,8 +12,9 @@ import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.ui.Ui;
 import org.jusecase.ui.elements.Button;
+import org.jusecase.ui.elements.Label;
 import org.jusecase.ui.font.Align;
-import org.jusecase.ui.font.BitmapFont;
+import org.jusecase.ui.font.Font;
 import org.jusecase.ui.opengl.font.BitmapFontLoader;
 import org.jusecase.ui.style.ImageButtonStyle;
 import org.jusecase.ui.style.QuadButtonStyle;
@@ -40,7 +40,7 @@ public class Playground implements Application {
     private Button button = new Button();
     private Image image;
     private TextureAtlas textureAtlas;
-    private BitmapFont bitmapFont;
+    private Font bitmapFont;
     private Button moveableButton;
 
 
@@ -133,10 +133,10 @@ public class Playground implements Application {
 
     private void addSampleTexts() {
         bitmapFont = bitmapFontLoader.load("fonts/font-comic.fnt");
-        BitmapFontText bitmapFontText = new BitmapFontText(bitmapFont);
-        bitmapFontText.setAlign(Align.CENTER);
-        bitmapFontText.setText("Hello world!\nHere comes line two...");
-        moveableButton.add(bitmapFontText);
+        Label label = new Label(bitmapFont);
+        label.setAlign(Align.CENTER);
+        label.setText("Hello world!\nHere comes line two...");
+        moveableButton.add(label);
     }
 
     private void dragButton(TouchEvent touchEvent) {
@@ -151,5 +151,6 @@ public class Playground implements Application {
     @Override
     public void dispose() {
         textureAtlas.dispose();
+        bitmapFont.dispose();
     }
 }
