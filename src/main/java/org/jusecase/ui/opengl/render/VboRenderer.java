@@ -2,9 +2,9 @@ package org.jusecase.ui.opengl.render;
 
 import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Component;
-import org.jusecase.scenegraph.Image;
+import org.jusecase.scenegraph.node2d.Image;
 import org.jusecase.scenegraph.Node;
-import org.jusecase.scenegraph.Quad;
+import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.math.Matrix3x2;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.ui.opengl.shader.Shader;

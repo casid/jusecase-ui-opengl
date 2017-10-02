@@ -1,9 +1,9 @@
 package org.jusecase.ui.opengl.render;
 
-import org.jusecase.scenegraph.Image;
+import org.jusecase.scenegraph.node2d.Image;
 import org.jusecase.scenegraph.Node;
-import org.jusecase.scenegraph.Node2d;
-import org.jusecase.scenegraph.Quad;
+import org.jusecase.scenegraph.node2d.Node2d;
+import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.texture.TexCoords;
 import org.jusecase.scenegraph.texture.Texture;
