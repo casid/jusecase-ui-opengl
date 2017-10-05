@@ -16,8 +16,7 @@ import org.jusecase.ui.elements.Label;
 import org.jusecase.ui.font.Align;
 import org.jusecase.ui.font.Font;
 import org.jusecase.ui.opengl.font.BitmapFontLoader;
-import org.jusecase.ui.style.ImageButtonStyle;
-import org.jusecase.ui.style.QuadButtonStyle;
+import org.jusecase.ui.style.ButtonStyle;
 import org.jusecase.ui.touch.TouchEvent;
 import org.jusecase.ui.touch.TouchPhase;
 
@@ -72,10 +71,10 @@ public class Playground implements Application {
     }
 
     private void initStyles() {
-        QuadButtonStyle buttonStyle = new QuadButtonStyle();
-        buttonStyle.active.setColor(new Color("#fff", 0.5f));
-        buttonStyle.hovered.setColor(new Color("#f0f", 0.5f));
-        buttonStyle.pressed.setColor(new Color("#fff", 0.5f));
+        ButtonStyle buttonStyle = new ButtonStyle();
+        buttonStyle.active.color = new Color("#fff", 0.5f);
+        buttonStyle.hovered.color = new Color("#f0f", 0.5f);
+        buttonStyle.pressed.color = new Color("#fff", 0.5f);
         ui.setDefaultStyle(Button.class, buttonStyle);
     }
 
@@ -86,10 +85,10 @@ public class Playground implements Application {
         image = new Image(texture);
         ui.addFirst(image.setX(200).setY(0).setPivot(0.5f, 0.5f));
 
-        ImageButtonStyle style = new ImageButtonStyle();
-        style.active = new Image(texture);
-        style.hovered = (Image) new Image(texture).setColor(new Color("#0f0"));
-        style.pressed = (Image) new Image(texture).setColor(new Color("#f00"));
+        ButtonStyle style = new ButtonStyle();
+        style.active.texture = texture;
+        style.hovered.color = new Color("#0f0");
+        style.pressed.color = new Color("#f00");
 
         for (int i = 0; i < 200; ++i) {
             Button textureButton = new Button();
@@ -107,10 +106,9 @@ public class Playground implements Application {
     private void addSampleButtons() {
         button.setX(100).setY(100).setWidth(200).setHeight(50);
         button.onClick.add(e -> {
-            QuadButtonStyle style = (QuadButtonStyle) button.getStyle();
             Color color = new Color().random();
-            style.active.setColor(color);
-            style.hovered.setColor(color);
+            button.getStyle().active.color = color;
+            button.getStyle().hovered.color = color;
             System.out.println("Used memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
 
             Button randomButton = new Button();
