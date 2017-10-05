@@ -92,12 +92,12 @@ class QuadBatch {
     private void fillQuadVertices(Quad quad) {
         quadVertices[0][0] = 0;
         quadVertices[0][1] = 0;
-        quadVertices[1][0] = (float)quad.getWidth();
+        quadVertices[1][0] = quad.getWidth();
         quadVertices[1][1] = 0;
-        quadVertices[2][0] = (float)quad.getWidth();
-        quadVertices[2][1] = (float)quad.getHeight();
+        quadVertices[2][0] = quad.getWidth();
+        quadVertices[2][1] = quad.getHeight();
         quadVertices[3][0] = 0;
-        quadVertices[3][1] = (float)quad.getHeight();
+        quadVertices[3][1] = quad.getHeight();
 
         for (float[] vertex : quadVertices) {
             quad.getGlobalMatrix().transformPoint(vertex);
@@ -120,23 +120,23 @@ class QuadBatch {
 
         vertexBuffer.put(quadVertices[0]);
         vertexBuffer.put(quadColor);
-        vertexBuffer.put((float)texCoords.left).put((float)texCoords.top);
+        vertexBuffer.put(texCoords.left).put(texCoords.top);
         vertexBuffer.put(quadVertices[3]);
         vertexBuffer.put(quadColor);
-        vertexBuffer.put((float)texCoords.left).put((float)texCoords.bottom);
+        vertexBuffer.put(texCoords.left).put(texCoords.bottom);
         vertexBuffer.put(quadVertices[1]);
         vertexBuffer.put(quadColor);
-        vertexBuffer.put((float)texCoords.right).put((float)texCoords.top);
+        vertexBuffer.put(texCoords.right).put(texCoords.top);
 
         vertexBuffer.put(quadVertices[1]);
         vertexBuffer.put(quadColor);
-        vertexBuffer.put((float)texCoords.right).put((float)texCoords.top);
+        vertexBuffer.put(texCoords.right).put(texCoords.top);
         vertexBuffer.put(quadVertices[3]);
         vertexBuffer.put(quadColor);
-        vertexBuffer.put((float)texCoords.left).put((float)texCoords.bottom);
+        vertexBuffer.put(texCoords.left).put(texCoords.bottom);
         vertexBuffer.put(quadVertices[2]);
         vertexBuffer.put(quadColor);
-        vertexBuffer.put((float)texCoords.right).put((float)texCoords.bottom);
+        vertexBuffer.put(texCoords.right).put(texCoords.bottom);
     }
 
     void draw() {
