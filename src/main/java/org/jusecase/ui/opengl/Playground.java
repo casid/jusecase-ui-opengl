@@ -135,6 +135,14 @@ public class Playground implements Application {
         label.setAlign(Align.CENTER);
         label.setText("Hello world!\nHere comes line two...");
         moveableButton.add(label);
+
+        Button button = new Button();
+        button.setSize(150, 50);
+        ui.add(button);
+
+        button.getStyle().active.font = bitmapFont;
+
+        button.setText("Click me!");
     }
 
     private void dragButton(TouchEvent touchEvent) {
