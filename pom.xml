@@ -208,6 +208,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>1.8.12</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!-- Javadoc -->
