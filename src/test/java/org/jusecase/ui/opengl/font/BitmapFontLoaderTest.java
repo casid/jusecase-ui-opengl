@@ -3,7 +3,6 @@ package org.jusecase.ui.opengl.font;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
-import org.jusecase.inject.Trainer;
 import org.jusecase.ui.font.BitmapFont;
 import org.jusecase.ui.font.BitmapFontCharacter;
 import org.jusecase.ui.font.BitmapFontLoader;

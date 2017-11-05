@@ -18,5 +18,8 @@
     <SubTexture name="tower-inventory-potions-id" x="0" y="329" width="133" height="133"/>
     <SubTexture name="tower-inventory-potions-iu" x="135" y="329" width="133" height="133"/>
     <SubTexture name="tower-skill-button-cooldown" x="444" y="77" width="54" height="54"/>
+    <SubTexture name="tower-skill-button-cooldown-left" x="444" y="77" width="25" height="54"/>
+    <SubTexture name="tower-skill-button-cooldown-center" x="469" y="77" width="4" height="54"/>
+    <SubTexture name="tower-skill-button-cooldown-right" x="473" y="77" width="25" height="54"/>
     <SubTexture name="tower-stats-button-iu" x="282" y="227" width="70" height="71" frameX="-4" frameY="-4" frameWidth="77" frameHeight="77"/>
 </TextureAtlas>

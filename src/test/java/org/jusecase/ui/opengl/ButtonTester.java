@@ -23,7 +23,7 @@ import org.jusecase.ui.touch.TouchPhase;
 import javax.inject.Inject;
 
 @Component
-public class Playground implements Application {
+public class ButtonTester implements Application {
 
     @Inject ApplicationBackend applicationBackend;
     @Inject TextureAtlasLoader textureAtlasLoader;
@@ -39,7 +39,7 @@ public class Playground implements Application {
 
 
     public static void main(String[] args) {
-        new LwjglApplicationBackend(Playground.class).start();
+        new LwjglApplicationBackend(ButtonTester.class).start();
     }
 
     @Override

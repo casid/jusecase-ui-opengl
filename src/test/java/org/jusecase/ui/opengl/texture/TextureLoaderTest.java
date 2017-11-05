@@ -3,9 +3,6 @@ package org.jusecase.ui.opengl.texture;
 import org.junit.jupiter.api.Test;
 import org.jusecase.scenegraph.texture.TextureLoader;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
