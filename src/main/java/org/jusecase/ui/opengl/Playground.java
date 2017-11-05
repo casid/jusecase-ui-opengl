@@ -15,7 +15,7 @@ import org.jusecase.ui.elements.Button;
 import org.jusecase.ui.elements.Label;
 import org.jusecase.ui.font.Align;
 import org.jusecase.ui.font.Font;
-import org.jusecase.ui.opengl.font.BitmapFontLoader;
+import org.jusecase.ui.font.BitmapFontLoader;
 import org.jusecase.ui.style.ButtonStyle;
 import org.jusecase.ui.touch.TouchEvent;
 import org.jusecase.ui.touch.TouchPhase;
@@ -25,14 +25,9 @@ import javax.inject.Inject;
 @Component
 public class Playground implements Application {
 
-    @Inject
-    private ApplicationBackend applicationBackend;
-
-    @Inject
-    private TextureAtlasLoader textureAtlasLoader;
-
-    @Inject
-    private BitmapFontLoader bitmapFontLoader;
+    @Inject ApplicationBackend applicationBackend;
+    @Inject TextureAtlasLoader textureAtlasLoader;
+    @Inject BitmapFontLoader bitmapFontLoader;
 
     private Ui ui = new Ui();
 

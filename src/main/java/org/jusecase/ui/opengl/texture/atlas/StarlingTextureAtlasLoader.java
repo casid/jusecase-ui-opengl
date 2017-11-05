@@ -5,7 +5,7 @@ import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.scenegraph.texture.TextureLoader;
-import org.jusecase.ui.opengl.util.PathUtils;
+import org.jusecase.util.PathUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

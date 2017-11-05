@@ -3,7 +3,7 @@ package org.jusecase.ui.opengl.texture.stbi;
 import org.jusecase.inject.Component;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureLoader;
-import org.jusecase.ui.opengl.util.PathUtils;
+import org.jusecase.util.PathUtils;
 import org.lwjgl.BufferUtils;
 
 import java.io.InputStream;

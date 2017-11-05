@@ -6,7 +6,7 @@ import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.signals.Signal;
-import org.jusecase.ui.opengl.font.BitmapFontLoader;
+import org.jusecase.ui.font.BitmapFontLoader;
 import org.jusecase.ui.opengl.render.VboRenderer;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
@@ -18,7 +18,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import javax.inject.Inject;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
