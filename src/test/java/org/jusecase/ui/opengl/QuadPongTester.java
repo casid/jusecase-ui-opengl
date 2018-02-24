@@ -34,7 +34,7 @@ public class QuadPongTester implements Application {
         addRightPlayer();
         addLeftPlayer();
 
-        applicationBackend.onResize().add((width, height) -> rightPlayer.setX(applicationBackend.getWidth() - rightPlayer.getWidth()));
+        applicationBackend.onResize().add((width, height) -> rightPlayer.setX(width - rightPlayer.getWidth()));
     }
 
     private void addBall() {
@@ -77,6 +77,8 @@ public class QuadPongTester implements Application {
 
     @Override
     public void update() {
+        leftPlayer.setY(ball.getY() - 0.5f * (leftPlayer.getHeight() - ball.getHeight()));
+
         float step = 0.001f;
         float width = applicationBackend.getWidth();
         float height = applicationBackend.getHeight();
