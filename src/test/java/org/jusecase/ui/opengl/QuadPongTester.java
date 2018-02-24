@@ -16,8 +16,6 @@ public class QuadPongTester implements Application {
 
     @Inject
     private ApplicationBackend applicationBackend;
-    @Inject
-    private Timer timer;
 
     private Node2d scene = new Node2d();
     private Ball ball;
@@ -43,21 +41,11 @@ public class QuadPongTester implements Application {
 
     @Override
     public void process(TouchEvent touchEvent) {
-
     }
 
     @Override
     public void update() {
-        ball.setX(ball.getX() + ball.speedX * timer.dt());
-        ball.setY(ball.getY() + ball.speedY * timer.dt());
-
-        if (ball.getX() < 0.0f || ball.getX() + ball.getWidth() > applicationBackend.getWidth()) {
-            ball.reflectX();
-        }
-
-        if (ball.getY() < 0.0f || ball.getY() + ball.getHeight() > applicationBackend.getHeight()) {
-            ball.reflectY();
-        }
+        ball.update();
     }
 
     @Override
@@ -70,7 +58,13 @@ public class QuadPongTester implements Application {
         // nothing to do
     }
 
-    static class Ball extends Quad {
+    @Component
+    public static class Ball extends Quad {
+        @Inject
+        private ApplicationBackend applicationBackend;
+        @Inject
+        private Timer timer;
+
         private float speedX;
         private float speedY;
 
@@ -86,6 +80,41 @@ public class QuadPongTester implements Application {
 
         public void changeColor() {
             getColor().randomHue();
+        }
+
+        public void update() {
+            float step = 0.001f;
+            float ballX = getX();
+            float ballY = getY();
+            float width = applicationBackend.getWidth();
+            float height = applicationBackend.getHeight();
+
+            for (float dt = 0; dt <= timer.dt(); dt += step) {
+                ballX += speedX * step;
+                ballY += speedY * step;
+
+                if (ballX < 0.0f) {
+                    ballX = 0.0f;
+                    reflectX();
+                }
+
+                if (ballX + getWidth() > width) {
+                    ballX = width - getWidth();
+                    reflectX();
+                }
+
+                if (ballY < 0.0f) {
+                    ballY = 0.0f;
+                    reflectY();
+                }
+
+                if (ballY + getHeight() > height) {
+                    ballY = height - getHeight();
+                    reflectY();
+                }
+            }
+            setX(ballX);
+            setY(ballY);
         }
     }
 }
