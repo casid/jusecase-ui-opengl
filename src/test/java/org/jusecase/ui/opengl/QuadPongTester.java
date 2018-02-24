@@ -16,9 +16,13 @@ public class QuadPongTester implements Application {
 
     @Inject
     private ApplicationBackend applicationBackend;
+    @Inject
+    private Timer timer;
 
     private Node2d scene = new Node2d();
     private Ball ball;
+    private Player leftPlayer;
+    private Player rightPlayer;
 
     public static void main(String[] args) {
         new LwjglApplicationBackend(QuadPongTester.class).start();
@@ -26,12 +30,39 @@ public class QuadPongTester implements Application {
 
     @Override
     public void init() {
+        addBall();
+        addRightPlayer();
+        addLeftPlayer();
+
+        applicationBackend.onResize().add((width, height) -> rightPlayer.setX(applicationBackend.getWidth() - rightPlayer.getWidth()));
+    }
+
+    private void addBall() {
         ball = new Ball();
         ball.setWidth(20.0f);
         ball.setHeight(20.0f);
-        ball.speedX = ball.speedY = 500.0f;
+        ball.speedX = ball.speedY = 400.0f;
         moveBallToCenter();
         scene.add(ball);
+    }
+
+    private void addRightPlayer() {
+        rightPlayer = addPlayer();
+        rightPlayer.setX(applicationBackend.getWidth() - rightPlayer.getWidth());
+    }
+
+    private void addLeftPlayer() {
+        leftPlayer = addPlayer();
+        leftPlayer.setX(0.0f);
+    }
+
+    private Player addPlayer() {
+        Player player = new Player();
+        player.setWidth(20.0f);
+        player.setHeight(100.0f);
+        player.setY((applicationBackend.getHeight() - player.getHeight()) / 2);
+        scene.add(player);
+        return player;
     }
 
     private void moveBallToCenter() {
@@ -41,11 +72,56 @@ public class QuadPongTester implements Application {
 
     @Override
     public void process(TouchEvent touchEvent) {
+        rightPlayer.setY(touchEvent.y - 0.5f * rightPlayer.getHeight());
     }
 
     @Override
     public void update() {
-        ball.update();
+        float step = 0.001f;
+        float width = applicationBackend.getWidth();
+        float height = applicationBackend.getHeight();
+
+        for (float dt = 0; dt <= timer.dt(); dt += step) {
+            ball.setX(ball.getX() + ball.speedX * step);
+            ball.setY(ball.getY() + ball.speedY * step);
+
+            if (ball.getX() < 0.0f) {
+                score();
+            }
+
+            if (ball.getX() > width) {
+                score();
+            }
+
+            if (ball.getX() < leftPlayer.getX() + leftPlayer.getWidth() && ball.getY() >= leftPlayer.getY() && ball.getY() <= leftPlayer.getY() + leftPlayer.getHeight()) {
+                ball.setX(leftPlayer.getX() + leftPlayer.getWidth());
+                ball.reflectX();
+                ball.changeColor();
+                leftPlayer.getColor().set(ball.getColor());
+            }
+
+            if (ball.getX() + ball.getWidth() > rightPlayer.getX() && ball.getY() >= rightPlayer.getY() && ball.getY() <= rightPlayer.getY() + rightPlayer.getHeight()) {
+                ball.setX(rightPlayer.getX() - ball.getWidth());
+                ball.reflectX();
+                ball.changeColor();
+                rightPlayer.getColor().set(ball.getColor());
+            }
+
+            if (ball.getY() < 0.0f) {
+                ball.setY(0.0f);
+                ball.reflectY();
+            }
+
+            if (ball.getY() + ball.getHeight() > height) {
+                ball.setY(height - ball.getHeight());
+                ball.reflectY();
+            }
+        }
+    }
+
+    private void score() {
+        ball.reflectX();
+        moveBallToCenter();
     }
 
     @Override
@@ -58,63 +134,23 @@ public class QuadPongTester implements Application {
         // nothing to do
     }
 
-    @Component
     public static class Ball extends Quad {
-        @Inject
-        private ApplicationBackend applicationBackend;
-        @Inject
-        private Timer timer;
-
         private float speedX;
         private float speedY;
 
         public void reflectX() {
             speedX = -speedX;
-            changeColor();
         }
 
         public void reflectY() {
             speedY = -speedY;
-            changeColor();
         }
 
         public void changeColor() {
             getColor().randomHue();
         }
+    }
 
-        public void update() {
-            float step = 0.001f;
-            float ballX = getX();
-            float ballY = getY();
-            float width = applicationBackend.getWidth();
-            float height = applicationBackend.getHeight();
-
-            for (float dt = 0; dt <= timer.dt(); dt += step) {
-                ballX += speedX * step;
-                ballY += speedY * step;
-
-                if (ballX < 0.0f) {
-                    ballX = 0.0f;
-                    reflectX();
-                }
-
-                if (ballX + getWidth() > width) {
-                    ballX = width - getWidth();
-                    reflectX();
-                }
-
-                if (ballY < 0.0f) {
-                    ballY = 0.0f;
-                    reflectY();
-                }
-
-                if (ballY + getHeight() > height) {
-                    ballY = height - getHeight();
-                    reflectY();
-                }
-            }
-            setX(ballX);
-            setY(ballY);
-        }
+    public static class Player extends Quad {
     }
 }
