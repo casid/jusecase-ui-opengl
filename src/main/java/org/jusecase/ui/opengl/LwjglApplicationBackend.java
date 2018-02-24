@@ -5,6 +5,8 @@ import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.scenegraph.render.Renderer;
+import org.jusecase.scenegraph.time.CurrentTime;
+import org.jusecase.scenegraph.time.StopWatch;
 import org.jusecase.signals.Signal;
 import org.jusecase.ui.font.BitmapFontLoader;
 import org.jusecase.ui.opengl.render.VboRenderer;
@@ -18,6 +20,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
+import javax.inject.Inject;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -36,6 +39,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     private int height;
 
     private MouseInputProcessor mouseInputProcessor;
+    private StopWatch stopWatch;
 
     private final Signal<OnResize> onResize = new Signal<>();
 
@@ -58,10 +62,13 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     public void start() {
         initWindow();
 
-        Injector.getInstance().add(this);
-        Injector.getInstance().add(new StbiTextureLoader());
-        Injector.getInstance().add(new StarlingTextureAtlasLoader());
-        Injector.getInstance().add(new BitmapFontLoader());
+        Injector injector = Injector.getInstance();
+        injector.add(this);
+        injector.add(new StbiTextureLoader());
+        injector.add(new StarlingTextureAtlasLoader());
+        injector.add(new BitmapFontLoader());
+        injector.add(new CurrentTime());
+        injector.add(stopWatch = new StopWatch());
 
         renderer = new PaintersAlgorithmRenderer(new VboRenderer());
 
@@ -93,6 +100,8 @@ public class LwjglApplicationBackend implements ApplicationBackend {
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!glfwWindowShouldClose(window)) {
+            stopWatch.start();
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             update();
@@ -103,6 +112,8 @@ public class LwjglApplicationBackend implements ApplicationBackend {
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+
+            stopWatch.stop();
         }
     }
 
