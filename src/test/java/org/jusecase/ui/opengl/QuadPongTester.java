@@ -39,8 +39,7 @@ public class QuadPongTester implements Application {
 
     private void addBall() {
         ball = new Ball();
-        ball.setWidth(20.0f);
-        ball.setHeight(20.0f);
+        ball.setSize(20.0f, 20.0f);
         ball.speedX = ball.speedY = 400.0f;
         moveBallToCenter();
         scene.add(ball);
@@ -58,8 +57,7 @@ public class QuadPongTester implements Application {
 
     private Player addPlayer() {
         Player player = new Player();
-        player.setWidth(20.0f);
-        player.setHeight(100.0f);
+        player.setSize(20.0f, 100.0f);
         player.setY((applicationBackend.getHeight() - player.getHeight()) / 2);
         scene.add(player);
         return player;
