@@ -8,6 +8,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class MouseInputProcessor {
     private final long window;
     private final TouchEvent currentEvent = new TouchEvent();
+    private final TouchEvent polledEvent = new TouchEvent();
     private boolean hasChanges;
 
     public MouseInputProcessor(long window) {
@@ -55,7 +56,7 @@ public class MouseInputProcessor {
     public TouchEvent poll() {
         if (hasChanges) {
             hasChanges = false;
-            return currentEvent.clone();
+            return currentEvent.copyTo(polledEvent);
         }
         return null;
     }
