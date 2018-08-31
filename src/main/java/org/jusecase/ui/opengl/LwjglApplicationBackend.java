@@ -20,7 +20,6 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
-import javax.inject.Inject;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -43,7 +42,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
 
     private final Signal<OnResize> onResize = new Signal<>();
 
-    protected LwjglApplicationBackend(Class<? extends Application> applicationClass) {
+    public LwjglApplicationBackend(Class<? extends Application> applicationClass) {
         this.applicationClass = applicationClass;
     }
 
