@@ -9,18 +9,22 @@ import org.jusecase.scenegraph.time.CurrentTime;
 import org.jusecase.scenegraph.time.StopWatch;
 import org.jusecase.signals.Signal;
 import org.jusecase.ui.font.BitmapFontLoader;
+import org.jusecase.ui.input.Event;
+import org.jusecase.ui.input.InputProcessor;
+import org.jusecase.ui.opengl.input.MouseScrollProcessor;
 import org.jusecase.ui.opengl.render.VboRenderer;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
-import org.jusecase.ui.opengl.touch.MouseInputProcessor;
+import org.jusecase.ui.opengl.input.MouseTouchProcessor;
 import org.jusecase.ui.signal.OnResize;
-import org.jusecase.ui.touch.TouchEvent;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -37,7 +41,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     private int width;
     private int height;
 
-    private MouseInputProcessor mouseInputProcessor;
+    private List<InputProcessor> inputProcessors = new ArrayList<>();
     private StopWatch stopWatch;
 
     private final Signal<OnResize> onResize = new Signal<>();
@@ -117,13 +121,14 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     }
 
     private void update() {
-        TouchEvent event = mouseInputProcessor.poll();
-        if (event != null) {
-            application.process(event);
+        for (InputProcessor inputProcessor : inputProcessors) {
+            Event event = inputProcessor.poll();
+            if (event != null) {
+                application.process(event);
+            }
         }
         application.update();
     }
-
 
     private void initWindow() {
         // Setup an error callback. The default implementation
@@ -155,9 +160,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
             }
         });
 
-        glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
-            glViewport(0, 0, width, height);
-        });
+        glfwSetFramebufferSizeCallback(window, (window, width, height) -> glViewport(0, 0, width, height));
 
         glfwSetWindowSizeCallback(window, (window, width, height) -> {
             this.width = width;
@@ -196,7 +199,8 @@ public class LwjglApplicationBackend implements ApplicationBackend {
         // Make the window visible
         glfwShowWindow(window);
 
-        mouseInputProcessor = new MouseInputProcessor(window);
+        inputProcessors.add(new MouseTouchProcessor(window));
+        inputProcessors.add(new MouseScrollProcessor(window));
     }
 
     private void disposeWindow() {

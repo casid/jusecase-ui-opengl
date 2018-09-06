@@ -16,9 +16,10 @@ import org.jusecase.ui.elements.Label;
 import org.jusecase.ui.font.Align;
 import org.jusecase.ui.font.Font;
 import org.jusecase.ui.font.BitmapFontLoader;
+import org.jusecase.ui.input.Event;
 import org.jusecase.ui.style.ButtonStyle;
-import org.jusecase.ui.touch.TouchEvent;
-import org.jusecase.ui.touch.TouchPhase;
+import org.jusecase.ui.input.TouchEvent;
+import org.jusecase.ui.input.TouchPhase;
 
 import javax.inject.Inject;
 
@@ -51,8 +52,8 @@ public class ButtonTester implements Application {
     }
 
     @Override
-    public void process(TouchEvent touchEvent) {
-        ui.process(touchEvent);
+    public void process(Event event) {
+        ui.process(event);
     }
 
     @Override

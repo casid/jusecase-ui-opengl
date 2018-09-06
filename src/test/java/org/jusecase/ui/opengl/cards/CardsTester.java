@@ -5,20 +5,15 @@ import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Component;
 import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.color.Color;
-import org.jusecase.scenegraph.node2d.Node2d;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.time.Timer;
 import org.jusecase.scenegraph.tween.Tweens;
-import org.jusecase.scenegraph.tween.animations.QuadraticOut;
-import org.jusecase.scenegraph.tween.properties.FloatProperty;
 import org.jusecase.ui.Ui;
 import org.jusecase.ui.elements.Button;
-import org.jusecase.ui.elements.Element;
+import org.jusecase.ui.input.Event;
 import org.jusecase.ui.opengl.LwjglApplicationBackend;
-import org.jusecase.ui.signal.OnHover;
 import org.jusecase.ui.signal.OnResize;
 import org.jusecase.ui.style.ButtonStyle;
-import org.jusecase.ui.touch.TouchEvent;
 
 import javax.inject.Inject;
 
@@ -63,8 +58,8 @@ public class CardsTester implements Application, OnResize {
     }
 
     @Override
-    public void process(TouchEvent touchEvent) {
-        ui.process(touchEvent);
+    public void process(Event event) {
+        ui.process(event);
     }
 
     @Override

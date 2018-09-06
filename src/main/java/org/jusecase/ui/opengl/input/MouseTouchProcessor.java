@@ -1,17 +1,18 @@
-package org.jusecase.ui.opengl.touch;
+package org.jusecase.ui.opengl.input;
 
-import org.jusecase.ui.touch.TouchEvent;
-import org.jusecase.ui.touch.TouchPhase;
+import org.jusecase.ui.input.InputProcessor;
+import org.jusecase.ui.input.TouchEvent;
+import org.jusecase.ui.input.TouchPhase;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class MouseInputProcessor {
+public class MouseTouchProcessor implements InputProcessor {
     private final long window;
     private final TouchEvent currentEvent = new TouchEvent();
     private final TouchEvent polledEvent = new TouchEvent();
     private boolean hasChanges;
 
-    public MouseInputProcessor(long window) {
+    public MouseTouchProcessor(long window) {
         this.window = window;
         init();
     }
@@ -40,19 +41,20 @@ public class MouseInputProcessor {
             }
 
             if (!hasChanges) {
-                currentEvent.deltaX = (float)x - currentEvent.x;
-                currentEvent.deltaY = (float)y - currentEvent.y;
+                currentEvent.deltaX = (float) x - currentEvent.x;
+                currentEvent.deltaY = (float) y - currentEvent.y;
             } else {
-                currentEvent.deltaX += (float)x - currentEvent.x;
-                currentEvent.deltaY += (float)y - currentEvent.y;
+                currentEvent.deltaX += (float) x - currentEvent.x;
+                currentEvent.deltaY += (float) y - currentEvent.y;
             }
 
-            currentEvent.x = (float)x;
-            currentEvent.y = (float)y;
+            currentEvent.x = (float) x;
+            currentEvent.y = (float) y;
             hasChanges = true;
         });
     }
 
+    @Override
     public TouchEvent poll() {
         if (hasChanges) {
             hasChanges = false;

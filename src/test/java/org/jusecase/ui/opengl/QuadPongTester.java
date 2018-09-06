@@ -7,7 +7,8 @@ import org.jusecase.scenegraph.node2d.Node2d;
 import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.time.Timer;
-import org.jusecase.ui.touch.TouchEvent;
+import org.jusecase.ui.input.Event;
+import org.jusecase.ui.input.TouchEvent;
 
 import javax.inject.Inject;
 
@@ -69,8 +70,11 @@ public class QuadPongTester implements Application {
     }
 
     @Override
-    public void process(TouchEvent touchEvent) {
-        rightPlayer.setY(touchEvent.y - 0.5f * rightPlayer.getHeight());
+    public void process(Event event) {
+        if (event instanceof TouchEvent) {
+            TouchEvent touchEvent = (TouchEvent)event;
+            rightPlayer.setY(touchEvent.y - 0.5f * rightPlayer.getHeight());
+        }
     }
 
     @Override

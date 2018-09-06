@@ -8,16 +8,18 @@ import org.jusecase.scenegraph.tween.Tweens;
 import org.jusecase.scenegraph.tween.animations.QuadraticOut;
 import org.jusecase.scenegraph.tween.properties.FloatProperty;
 import org.jusecase.ui.elements.Element;
+import org.jusecase.ui.input.ScrollEvent;
 import org.jusecase.ui.signal.OnHover;
+import org.jusecase.ui.signal.OnScroll;
 import org.jusecase.ui.signal.OnTouch;
-import org.jusecase.ui.touch.TouchEvent;
-import org.jusecase.ui.touch.TouchPhase;
+import org.jusecase.ui.input.TouchEvent;
+import org.jusecase.ui.input.TouchPhase;
 
 import javax.inject.Inject;
 
 
 @Component
-public class Cards extends Node2d implements OnHover, OnTouch {
+public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
 
     @Inject
     private ApplicationBackend applicationBackend;
@@ -33,6 +35,7 @@ public class Cards extends Node2d implements OnHover, OnTouch {
         card.setColor(new Color().randomHue());
         card.onHover.add(this);
         card.onTouch.add(this);
+        card.onScroll.add(this);
         add(card);
 
         layout();
@@ -119,5 +122,10 @@ public class Cards extends Node2d implements OnHover, OnTouch {
             card.setX(card.getX() + touchEvent.deltaX);
             card.setY(card.getY() + touchEvent.deltaY);
         }
+    }
+
+    @Override
+    public void onScroll(ScrollEvent scrollEvent) {
+        System.out.println(scrollEvent); // TODO
     }
 }
