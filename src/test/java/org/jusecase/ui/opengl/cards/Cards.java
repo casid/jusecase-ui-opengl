@@ -26,6 +26,8 @@ public class Cards extends Node2d implements OnHover, OnTouch {
 
     public void addCard() {
         Card card = new Card();
+        card.setPosition(applicationBackend.getWidth(), 0);
+        card.setRotation(-60);
         card.setSize(getCardWidth(), getCardHeight());
         card.setPivot(0.5f, 1.0f);
         card.setColor(new Color().randomHue());
