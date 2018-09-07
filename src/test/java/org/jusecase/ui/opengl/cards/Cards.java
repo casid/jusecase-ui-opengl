@@ -86,6 +86,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
         float targetRotation = -normalizedX * 20;
 
         if (card.isSelected()) {
+            targetX -= 0.25f * getCardWidth();
             targetY -= 0.1f * getCardHeight();
             targetRotation *= 0.4f;
             duration = 0.18f;
@@ -96,7 +97,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
             duration = 0.3f;
         }
 
-        Tween tween = tweens.tween(card)
+        tweens.tween(card)
                 .duration(duration)
                 .animation(QuadraticOut.animation)
                 .property(new FloatProperty(card.getX(), targetX, card::animateX))
@@ -104,23 +105,6 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
                 .property(new FloatProperty(card.getRotation(), targetRotation, card::setRotation))
                 .property(new FloatProperty(card.getScaleX(), scale, card::setScale))
         ;
-
-        if (card.isSelected()) {
-            tween.onUpdate(t -> {
-                if (t > 0.1f) {
-                    bringToFront(card);
-                    tween.onUpdate(null);
-                }
-            });
-        } else if (card.isJustDeselected()) {
-            tween.onUpdate(t -> {
-                if (t > 0.9f) {
-                    setChildIndex(card, card.getIndex());
-                    tween.onUpdate(null);
-                }
-            });
-            card.setJustDeselected(false);
-        }
     }
 
     @Override
