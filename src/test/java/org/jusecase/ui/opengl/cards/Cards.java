@@ -4,6 +4,7 @@ import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Component;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.node2d.Node2d;
+import org.jusecase.scenegraph.tween.Tween;
 import org.jusecase.scenegraph.tween.Tweens;
 import org.jusecase.scenegraph.tween.animations.QuadraticOut;
 import org.jusecase.scenegraph.tween.properties.FloatProperty;
@@ -26,6 +27,8 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
     @Inject
     private Tweens tweens;
 
+    private boolean needsLayout;
+
     public void addCard() {
         Card card = new Card();
         card.setPosition(applicationBackend.getWidth(), 0);
@@ -33,12 +36,13 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
         card.setSize(getCardWidth(), getCardHeight());
         card.setPivot(0.5f, 1.0f);
         card.setColor(new Color().randomHue());
+        card.setIndex(getChildCount(Card.class));
         card.onHover.add(this);
         card.onTouch.add(this);
         card.onScroll.add(this);
         add(card);
 
-        layout();
+        needsLayout();
     }
 
     private float getCardWidth() {
@@ -49,14 +53,25 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
         return 200;
     }
 
-    public void layout() {
+    public void needsLayout() {
+        needsLayout = true;
+    }
+
+    public void update() {
+        if (needsLayout) {
+            layout();
+            needsLayout = false;
+        }
+    }
+
+    private void layout() {
         float distanceX = 0.8f * getCardWidth();
         float startX = -0.5f * distanceX * getChildCount(Card.class) + 0.5f * distanceX;
 
-        visitAllDirectChildren(Card.class, (c, index) -> layoutCard(c, index, startX, distanceX));
+        visitAllDirectChildren(Card.class, c -> layoutCard(c, startX, distanceX));
     }
 
-    private void layoutCard(Card card, int index, float startX, float distanceX) {
+    private void layoutCard(Card card, float startX, float distanceX) {
         if (card.isGrabbed()) {
             return;
         }
@@ -65,7 +80,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
         float alpha = 1.0f;
         float scale = 1.0f;
 
-        float targetX = startX + distanceX * index;
+        float targetX = startX + distanceX * card.getIndex();
 
         float normalizedX = 2.0f * targetX / applicationBackend.getWidth();
         float targetY = normalizedX * normalizedX * 100; // TODO constant
@@ -83,12 +98,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
             duration = 0.4f;
         }
 
-        Card sibling = getSibling(card, -1, Card.class);
-        if (sibling != null && sibling.isSelected()) {
-            alpha = 0.2f;
-        }
-
-        tweens.tween(card)
+        Tween tween = tweens.tween(card)
                 .duration(duration)
                 .animation(QuadraticOut.animation)
                 .property(new FloatProperty(card.getX(), targetX, card::animateX))
@@ -97,6 +107,23 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
                 .property(new FloatProperty(card.getScaleX(), scale, card::setScale))
                 .property(new FloatProperty(card.getAlpha(), alpha, card::setAlpha))
         ;
+
+        if (card.isSelected()) {
+            tween.onUpdate(t -> {
+                if (t > 0.1f) {
+                    bringToFront(card);
+                    tween.onUpdate(null);
+                }
+            });
+        } else if (card.isJustDeselected()) {
+            tween.onUpdate(t -> {
+                if (t > 0.9f) {
+                    setChildIndex(card, card.getIndex());
+                    tween.onUpdate(null);
+                }
+            });
+            card.setJustDeselected(false);
+        }
     }
 
     @Override
@@ -104,7 +131,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
         Card card = (Card) element;
         card.setSelected(started);
         card.setJustDeselected(!started);
-        layout();
+        needsLayout();
     }
 
     @Override
@@ -117,8 +144,8 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
             card.setGrabbed(false);
             card.setSelected(false);
             card.setJustDeselected(true);
-            layout();
-        } else if (touchEvent.phase == TouchPhase.Move) {
+            needsLayout();
+        } else if (touchEvent.phase == TouchPhase.Move && card.isGrabbed()) {
             card.setX(card.getX() + touchEvent.deltaX);
             card.setY(card.getY() + touchEvent.deltaY);
         }

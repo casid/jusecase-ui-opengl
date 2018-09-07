@@ -7,7 +7,8 @@ import org.jusecase.ui.elements.Element;
 
 
 public class Card extends Element {
-    private Quad    quad;
+    private Quad quad;
+    private int index;
     private boolean selected;
     private boolean justDeselected;
     private boolean grabbed;
@@ -17,13 +18,13 @@ public class Card extends Element {
         add(quad);
     }
 
-    public void animateX( float x ) {
+    public void animateX(float x) {
         if (!grabbed) {
             setX(x);
         }
     }
 
-    public void animateY( float y ) {
+    public void animateY(float y) {
         if (!grabbed) {
             setY(y);
         }
@@ -33,7 +34,7 @@ public class Card extends Element {
         return grabbed;
     }
 
-    public void setColor( Color color) {
+    public void setColor(Color color) {
         quad.setColor(color);
     }
 
@@ -41,7 +42,7 @@ public class Card extends Element {
         return selected;
     }
 
-    public void setGrabbed( boolean grabbed ) {
+    public void setGrabbed(boolean grabbed) {
         this.grabbed = grabbed;
     }
 
@@ -69,6 +70,14 @@ public class Card extends Element {
 
     public void setAlpha(float alpha) {
         quad.getColor().a = alpha;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }
 

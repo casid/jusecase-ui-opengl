@@ -64,6 +64,7 @@ public class CardsTester implements Application, OnResize {
 
     @Override
     public void update() {
+        cards.update();
         tweens.update(timer.dt());
     }
 
@@ -81,6 +82,6 @@ public class CardsTester implements Application, OnResize {
         cards.setX(width * 0.5f);
         cards.setY(height * 0.95f);
 
-        cards.layout();
+        cards.needsLayout();
     }
 }
