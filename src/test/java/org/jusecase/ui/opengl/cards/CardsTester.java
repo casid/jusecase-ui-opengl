@@ -6,6 +6,8 @@ import org.jusecase.inject.Component;
 import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.render.Renderer;
+import org.jusecase.scenegraph.texture.TextureAtlas;
+import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.scenegraph.time.Timer;
 import org.jusecase.scenegraph.tween.Tweens;
 import org.jusecase.ui.Ui;
@@ -20,8 +22,12 @@ import javax.inject.Inject;
 @Component
 public class CardsTester implements Application, OnResize {
 
-    @Inject ApplicationBackend applicationBackend;
-    @Inject Timer timer;
+    @Inject
+    private ApplicationBackend applicationBackend;
+    @Inject
+    private Timer timer;
+    @Inject
+    private TextureAtlasLoader textureAtlasLoader;
 
     private Ui ui = new Ui();
     private Tweens tweens = new Tweens();
@@ -34,6 +40,7 @@ public class CardsTester implements Application, OnResize {
     @Override
     public void init() {
         Injector.getInstance().add(tweens);
+        Injector.getInstance().add(textureAtlasLoader.load("images/_theme@2x.xml"));
 
         initStyles();
 

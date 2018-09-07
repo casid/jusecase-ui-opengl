@@ -1,21 +1,29 @@
 package org.jusecase.ui.opengl.cards;
 
+import org.jusecase.inject.Component;
 import org.jusecase.scenegraph.color.Color;
+import org.jusecase.scenegraph.node2d.Image;
 import org.jusecase.scenegraph.node2d.Node2d;
 import org.jusecase.scenegraph.node2d.Quad;
+import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.ui.elements.Element;
 
+import javax.inject.Inject;
 
+@Component
 public class Card extends Element {
-    private Quad quad;
+    @Inject
+    private TextureAtlas textureAtlas;
+
+    private Image background;
     private int index;
     private boolean selected;
     private boolean justDeselected;
     private boolean grabbed;
 
     public Card() {
-        quad = new Quad();
-        add(quad);
+        background = new Image(textureAtlas.get("card"));
+        add(background);
     }
 
     public void animateX(float x) {
@@ -35,7 +43,7 @@ public class Card extends Element {
     }
 
     public void setColor(Color color) {
-        quad.setColor(color);
+        background.setColor(color);
     }
 
     public boolean isSelected() {
@@ -52,7 +60,7 @@ public class Card extends Element {
 
     @Override
     public Node2d setSize(float width, float height) {
-        quad.setSize(width, height);
+        background.setSize(width, height);
         return super.setSize(width, height);
     }
 
@@ -62,14 +70,6 @@ public class Card extends Element {
 
     public void setJustDeselected(boolean justDeselected) {
         this.justDeselected = justDeselected;
-    }
-
-    public float getAlpha() {
-        return quad.getColor().a;
-    }
-
-    public void setAlpha(float alpha) {
-        quad.getColor().a = alpha;
     }
 
     public int getIndex() {

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://texturepacker.com-->
+<!-- $TexturePacker:SmartUpdate:03a6ae35d792ca5a3ece13dae4f94391$ -->
+<TextureAtlas imagePath="_theme@2x.png">
+    <SubTexture name="aura" x="642" y="712" width="416" height="417"/>
+    <SubTexture name="background" x="0" y="0" width="640" height="1136"/>
+    <SubTexture name="card-action-1-id" x="642" y="70" width="598" height="94"/>
+    <SubTexture name="card-action-1-iu" x="1250" y="0" width="606" height="98"/>
+    <SubTexture name="card-action-2-id" x="1464" y="712" width="288" height="94"/>
+    <SubTexture name="card-action-2-iu" x="1166" y="978" width="296" height="98"/>
+    <SubTexture name="card-badge" x="196" y="1966" width="56" height="56"/>
+    <SubTexture name="card-cookies-icon" x="1812" y="260" width="38" height="38"/>
+    <SubTexture name="card-cooldown-icon" x="1812" y="220" width="38" height="38"/>
+    <SubTexture name="card-damage-icon" x="1812" y="180" width="38" height="38"/>
+    <SubTexture name="card-damagetype-icon" x="1812" y="140" width="38" height="38"/>
+    <SubTexture name="card-divider" x="80" y="2024" width="12" height="12"/>
+    <SubTexture name="card-element-icon" x="1818" y="100" width="38" height="38"/>
+    <SubTexture name="card-experience-bar-empty" x="672" y="1966" width="576" height="48"/>
+    <SubTexture name="card-experience-bar-full" x="1250" y="100" width="566" height="36" frameX="-5" frameY="-6" frameWidth="576" frameHeight="48"/>
+    <SubTexture name="card-foil-bg" x="623" y="1138" width="621" height="826"/>
+    <SubTexture name="card-foil-border-bottom" x="642" y="35" width="599" height="33" frameX="-5" frameY="0" frameWidth="609" frameHeight="37"/>
+    <SubTexture name="card-foil-border-left" x="1812" y="300" width="30" height="741" frameX="-4" frameY="0" frameWidth="36" frameHeight="741"/>
+    <SubTexture name="card-foil-border-right" x="1996" y="162" width="31" height="741" frameX="0" frameY="0" frameWidth="35" frameHeight="741"/>
+    <SubTexture name="card-foil-border-top" x="642" y="0" width="599" height="33" frameX="-5" frameY="-4" frameWidth="609" frameHeight="37"/>
+    <SubTexture name="card-foil-gloss" x="0" y="1966" width="78" height="80"/>
+    <SubTexture name="card-gender-icon" x="1996" y="122" width="38" height="38"/>
+    <SubTexture name="card-gold-icon" x="1996" y="82" width="38" height="38"/>
+    <SubTexture name="card-icon-bg" x="1844" y="828" width="136" height="136"/>
+    <SubTexture name="card-item-icon-bg" x="1060" y="712" width="264" height="264"/>
+    <SubTexture name="card-items-id" x="1844" y="690" width="136" height="136"/>
+    <SubTexture name="card-items-iu" x="1844" y="552" width="136" height="136"/>
+    <SubTexture name="card-potions-id" x="1844" y="414" width="136" height="136"/>
+    <SubTexture name="card-potions-iu" x="1852" y="276" width="136" height="136"/>
+    <SubTexture name="card-range-icon" x="1996" y="42" width="38" height="38"/>
+    <SubTexture name="card-rarity-common" x="476" y="1966" width="72" height="55"/>
+    <SubTexture name="card-rarity-legendary" x="1060" y="1043" width="104" height="89"/>
+    <SubTexture name="card-rarity-rare" x="402" y="1966" width="72" height="55"/>
+    <SubTexture name="card-rarity-uncommon" x="328" y="1966" width="72" height="55"/>
+    <SubTexture name="card-rarity-unique" x="254" y="1966" width="72" height="55"/>
+    <SubTexture name="card-towers-id" x="1858" y="138" width="136" height="136"/>
+    <SubTexture name="card-towers-iu" x="1858" y="0" width="136" height="136"/>
+    <SubTexture name="card-transmute-bg" x="138" y="1966" width="56" height="56"/>
+    <SubTexture name="card-transmute-fill" x="80" y="1966" width="56" height="56"/>
+    <SubTexture name="card" x="0" y="1138" width="621" height="826"/>
+    <SubTexture name="quest-complete-bg" x="1250" y="138" width="560" height="572"/>
+    <SubTexture name="speechbubble-arrow" x="606" y="1966" width="64" height="50"/>
+    <SubTexture name="speechbubble" x="1996" y="0" width="40" height="40"/>
+    <SubTexture name="spinner" x="550" y="1966" width="54" height="55"/>
+</TextureAtlas>

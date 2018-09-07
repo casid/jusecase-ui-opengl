@@ -35,7 +35,6 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
         card.setRotation(-60);
         card.setSize(getCardWidth(), getCardHeight());
         card.setPivot(0.5f, 1.0f);
-        card.setColor(new Color().randomHue());
         card.setIndex(getChildCount(Card.class));
         card.onHover.add(this);
         card.onTouch.add(this);
@@ -46,11 +45,11 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
     }
 
     private float getCardWidth() {
-        return 150;
+        return 621 * 0.6f;
     }
 
     private float getCardHeight() {
-        return 200;
+        return 826 * 0.6f;
     }
 
     public void needsLayout() {
@@ -76,26 +75,25 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
             return;
         }
 
-        float duration = 1.0f;
-        float alpha = 1.0f;
+        float duration = 0.8f;
         float scale = 1.0f;
 
         float targetX = startX + distanceX * card.getIndex();
 
         float normalizedX = 2.0f * targetX / applicationBackend.getWidth();
-        float targetY = normalizedX * normalizedX * 100; // TODO constant
+        float targetY = normalizedX * normalizedX * 0.5f * getCardHeight();
 
         float targetRotation = -normalizedX * 20;
 
         if (card.isSelected()) {
-            targetY -= 20; // TODO constant
+            targetY -= 0.1f * getCardHeight();
             targetRotation *= 0.4f;
-            duration = 0.2f;
-            scale = 1.2f;
+            duration = 0.18f;
+            scale = 1.4f;
         }
 
         if (card.isJustDeselected()) {
-            duration = 0.4f;
+            duration = 0.3f;
         }
 
         Tween tween = tweens.tween(card)
@@ -105,7 +103,6 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
                 .property(new FloatProperty(card.getY(), targetY, card::animateY))
                 .property(new FloatProperty(card.getRotation(), targetRotation, card::setRotation))
                 .property(new FloatProperty(card.getScaleX(), scale, card::setScale))
-                .property(new FloatProperty(card.getAlpha(), alpha, card::setAlpha))
         ;
 
         if (card.isSelected()) {
@@ -117,7 +114,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
             });
         } else if (card.isJustDeselected()) {
             tween.onUpdate(t -> {
-                if (t > 0.15f) {
+                if (t > 0.9f) {
                     setChildIndex(card, card.getIndex());
                     tween.onUpdate(null);
                 }
