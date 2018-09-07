@@ -117,7 +117,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
             });
         } else if (card.isJustDeselected()) {
             tween.onUpdate(t -> {
-                if (t > 0.9f) {
+                if (t > 0.15f) {
                     setChildIndex(card, card.getIndex());
                     tween.onUpdate(null);
                 }
