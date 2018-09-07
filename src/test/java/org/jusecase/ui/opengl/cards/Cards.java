@@ -22,6 +22,10 @@ import javax.inject.Inject;
 @Component
 public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
 
+    private static final float BASE_DURATION = 0.8f;
+    private static final float SELECT_DURATION = 0.18f;
+    private static final float DESELECT_DURATION = 0.3f;
+
     @Inject
     private ApplicationBackend applicationBackend;
     @Inject
@@ -75,7 +79,7 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
             return;
         }
 
-        float duration = 0.8f;
+        float duration = BASE_DURATION;
         float scale = 1.0f;
 
         float targetX = startX + distanceX * card.getIndex();
@@ -86,15 +90,25 @@ public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
         float targetRotation = -normalizedX * 20;
 
         if (card.isSelected()) {
-            targetX -= 0.25f * getCardWidth();
             targetY -= 0.1f * getCardHeight();
             targetRotation *= 0.4f;
-            duration = 0.18f;
+            duration = SELECT_DURATION;
             scale = 1.4f;
         }
 
         if (card.isJustDeselected()) {
-            duration = 0.3f;
+            duration = DESELECT_DURATION;
+        }
+
+        Card sibling = getSibling(card, -1, Card.class);
+        if (sibling != null) {
+            if (sibling.isSelected()) {
+                targetX += 0.25f * getCardWidth();
+                duration = SELECT_DURATION;
+            }
+            if (sibling.isJustDeselected()) {
+                duration = DESELECT_DURATION;
+            }
         }
 
         tweens.tween(card)
