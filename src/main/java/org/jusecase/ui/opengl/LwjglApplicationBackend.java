@@ -16,6 +16,7 @@ import org.jusecase.ui.opengl.render.VboRenderer;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 import org.jusecase.ui.opengl.input.MouseTouchProcessor;
+import org.jusecase.ui.opengl.util.ScreenConverter;
 import org.jusecase.ui.signal.OnResize;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -38,11 +39,10 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     private Application application;
 
     private long window;
-    private int width;
-    private int height;
 
     private List<InputProcessor> inputProcessors = new ArrayList<>();
     private StopWatch stopWatch;
+    private ScreenConverter screenConverter;
 
     private final Signal<OnResize> onResize = new Signal<>();
 
@@ -63,6 +63,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     }
 
     public void start() {
+        screenConverter = new ScreenConverter();
         initWindow();
 
         Injector injector = Injector.getInstance();
@@ -72,6 +73,10 @@ public class LwjglApplicationBackend implements ApplicationBackend {
         injector.add(new BitmapFontLoader());
         injector.add(new CurrentTime());
         injector.add(stopWatch = new StopWatch());
+        injector.add(screenConverter);
+
+        inputProcessors.add(new MouseTouchProcessor(window));
+        inputProcessors.add(new MouseScrollProcessor(window));
 
         renderer = new PaintersAlgorithmRenderer(new VboRenderer());
 
@@ -160,12 +165,14 @@ public class LwjglApplicationBackend implements ApplicationBackend {
             }
         });
 
-        glfwSetFramebufferSizeCallback(window, (window, width, height) -> glViewport(0, 0, width, height));
+        glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+            screenConverter.setNative(width, height);
+            glViewport(0, 0, width, height);
+            onResize.dispatch(s -> s.onResize(width, height));
+        });
 
         glfwSetWindowSizeCallback(window, (window, width, height) -> {
-            this.width = width;
-            this.height = height;
-            onResize.dispatch(s -> s.onResize(this.width, this.height));
+            screenConverter.setWindow(width, height);
         });
 
         // Get the thread stack and push a new frame
@@ -179,15 +186,16 @@ public class LwjglApplicationBackend implements ApplicationBackend {
             // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-            width = pWidth.get(0);
-            height = pHeight.get(0);
-
             // Center the window
             glfwSetWindowPos(
                     window,
-                    (vidmode.width() - width) / 2,
-                    (vidmode.height() - height) / 2
+                    (vidmode.width() - pWidth.get(0)) / 2,
+                    (vidmode.height() - pHeight.get(0)) / 2
             );
+            screenConverter.setWindow(pWidth.get(0), pHeight.get(0));
+
+            glfwGetFramebufferSize(window, pWidth, pHeight);
+            screenConverter.setNative(pWidth.get(0), pHeight.get(0));
 
         } // the stack frame is popped automatically
 
@@ -198,9 +206,6 @@ public class LwjglApplicationBackend implements ApplicationBackend {
 
         // Make the window visible
         glfwShowWindow(window);
-
-        inputProcessors.add(new MouseTouchProcessor(window));
-        inputProcessors.add(new MouseScrollProcessor(window));
     }
 
     private void disposeWindow() {
@@ -220,12 +225,12 @@ public class LwjglApplicationBackend implements ApplicationBackend {
 
     @Override
     public int getWidth() {
-        return width;
+        return screenConverter.getNativeWidth();
     }
 
     @Override
     public int getHeight() {
-        return height;
+        return screenConverter.getNativeHeight();
     }
 
     @Override

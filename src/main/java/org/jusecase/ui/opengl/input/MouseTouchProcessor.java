@@ -1,12 +1,21 @@
 package org.jusecase.ui.opengl.input;
 
+import org.jusecase.inject.Component;
 import org.jusecase.ui.input.InputProcessor;
 import org.jusecase.ui.input.TouchEvent;
 import org.jusecase.ui.input.TouchPhase;
+import org.jusecase.ui.opengl.util.ScreenConverter;
+
+import javax.inject.Inject;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+@Component
 public class MouseTouchProcessor implements InputProcessor {
+
+    @Inject
+    private ScreenConverter screenConverter;
+
     private final long window;
     private final TouchEvent currentEvent = new TouchEvent();
     private final TouchEvent polledEvent = new TouchEvent();
@@ -30,6 +39,9 @@ public class MouseTouchProcessor implements InputProcessor {
         });
 
         glfwSetCursorPosCallback(window, (window, x, y) -> {
+            x = screenConverter.convertX(x);
+            y = screenConverter.convertY(y);
+
             if (!hasChanges) {
                 if (currentEvent.phase == TouchPhase.Begin) {
                     currentEvent.phase = TouchPhase.Move;
