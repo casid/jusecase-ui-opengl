@@ -2,17 +2,15 @@ package org.jusecase.ui.opengl.cards;
 
 import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Component;
-import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.node2d.Node2d;
-import org.jusecase.scenegraph.tween.Tween;
 import org.jusecase.scenegraph.tween.Tweens;
 import org.jusecase.scenegraph.tween.animations.QuadraticOut;
 import org.jusecase.scenegraph.tween.properties.FloatProperty;
 import org.jusecase.ui.elements.Element;
 import org.jusecase.ui.input.ScrollEvent;
-import org.jusecase.ui.signal.OnHover;
-import org.jusecase.ui.signal.OnScroll;
-import org.jusecase.ui.signal.OnTouch;
+import org.jusecase.ui.signal.OnHoverListener;
+import org.jusecase.ui.signal.OnScrollListener;
+import org.jusecase.ui.signal.OnTouchListener;
 import org.jusecase.ui.input.TouchEvent;
 import org.jusecase.ui.input.TouchPhase;
 
@@ -20,7 +18,7 @@ import javax.inject.Inject;
 
 
 @Component
-public class Cards extends Node2d implements OnHover, OnTouch, OnScroll {
+public class Cards extends Node2d implements OnHoverListener, OnTouchListener, OnScrollListener {
 
     private static final float BASE_DURATION = 0.8f;
     private static final float SELECT_DURATION = 0.18f;

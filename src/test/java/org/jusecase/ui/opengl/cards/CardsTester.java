@@ -6,7 +6,6 @@ import org.jusecase.inject.Component;
 import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.render.Renderer;
-import org.jusecase.scenegraph.texture.TextureAtlas;
 import org.jusecase.scenegraph.texture.TextureAtlasLoader;
 import org.jusecase.scenegraph.time.Timer;
 import org.jusecase.scenegraph.tween.Tweens;
@@ -14,13 +13,13 @@ import org.jusecase.ui.Ui;
 import org.jusecase.ui.elements.Button;
 import org.jusecase.ui.input.Event;
 import org.jusecase.ui.opengl.LwjglApplicationBackend;
-import org.jusecase.ui.signal.OnResize;
+import org.jusecase.ui.signal.OnResizeListener;
 import org.jusecase.ui.style.ButtonStyle;
 
 import javax.inject.Inject;
 
 @Component
-public class CardsTester implements Application, OnResize {
+public class CardsTester implements Application, OnResizeListener {
 
     @Inject
     private ApplicationBackend applicationBackend;

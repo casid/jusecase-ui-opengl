@@ -18,6 +18,7 @@ import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
 import org.jusecase.ui.opengl.input.MouseTouchProcessor;
 import org.jusecase.ui.opengl.util.ScreenConverter;
 import org.jusecase.ui.signal.OnResize;
+import org.jusecase.ui.signal.OnResizeListener;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -44,7 +45,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     private StopWatch stopWatch;
     private ScreenConverter screenConverter;
 
-    private final Signal<OnResize> onResize = new Signal<>();
+    private final OnResize onResize = new OnResize();
 
     public LwjglApplicationBackend(Class<? extends Application> applicationClass) {
         this.applicationClass = applicationClass;
@@ -168,7 +169,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
         glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
             screenConverter.setNative(width, height);
             glViewport(0, 0, width, height);
-            onResize.dispatch(s -> s.onResize(width, height));
+            onResize.dispatch(width, height);
         });
 
         glfwSetWindowSizeCallback(window, (window, width, height) -> {
@@ -234,7 +235,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     }
 
     @Override
-    public Signal<OnResize> onResize() {
+    public Signal<OnResizeListener> onResize() {
         return onResize;
     }
 }

@@ -10,6 +10,7 @@ import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.ui.opengl.shader.Shader;
 import org.jusecase.ui.opengl.shader.stage.FragmentShader;
 import org.jusecase.ui.opengl.shader.stage.VertexShader;
+import org.jusecase.ui.signal.OnResizeListener;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.*;
 
 @Component
-public class VboRenderer implements Renderer {
+public class VboRenderer implements Renderer, OnResizeListener {
 
     @Inject
     private ApplicationBackend applicationBackend;
@@ -34,7 +35,7 @@ public class VboRenderer implements Renderer {
     private Matrix3x2 projection;
 
     public VboRenderer() {
-        applicationBackend.onResize().add(this::onResize);
+        applicationBackend.onResize().add(this);
     }
 
     @Override
@@ -141,7 +142,7 @@ public class VboRenderer implements Renderer {
 
     @Override
     public void dispose() {
-        applicationBackend.onResize().remove(this::onResize);
+        applicationBackend.onResize().remove(this);
 
         if (quadShader != null) {
             quadShader.dispose();
@@ -167,7 +168,8 @@ public class VboRenderer implements Renderer {
         batch.addQuad(node);
     }
 
-    private void onResize(int width, int height) {
+    @Override
+    public void onResize(int width, int height) {
         Matrix3x2.orthoProjection(width, height, projection);
 
         if (quadShader != null) {
