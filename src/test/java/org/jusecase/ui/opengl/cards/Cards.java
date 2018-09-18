@@ -70,6 +70,7 @@ public class Cards extends Node2d implements OnHoverListener, OnTouchListener, O
         float startX = -0.5f * distanceX * getChildCount(Card.class) + 0.5f * distanceX;
 
         visitAllDirectChildren(Card.class, c -> layoutCard(c, startX, distanceX));
+        visitAllDirectChildren(Card.class, c -> c.setJustDeselected(false));
     }
 
     private void layoutCard(Card card, float startX, float distanceX) {
@@ -91,21 +92,19 @@ public class Cards extends Node2d implements OnHoverListener, OnTouchListener, O
             targetY -= 0.1f * getCardHeight();
             targetRotation *= 0.4f;
             duration = SELECT_DURATION;
-            scale = 1.4f;
-        }
-
-        if (card.isJustDeselected()) {
+            scale = 1.25f;
+        } else if (card.isJustDeselected()) {
             duration = DESELECT_DURATION;
-        }
-
-        Card sibling = getSibling(card, -1, Card.class);
-        if (sibling != null) {
-            if (sibling.isSelected()) {
-                targetX += 0.25f * getCardWidth();
-                duration = SELECT_DURATION;
-            }
-            if (sibling.isJustDeselected()) {
-                duration = DESELECT_DURATION;
+        } else {
+            Card sibling = getSibling(card, -1, Card.class);
+            if (sibling != null) {
+                if (sibling.isSelected()) {
+                    targetX += 0.25f * getCardWidth();
+                    duration = SELECT_DURATION;
+                }
+                if (sibling.isJustDeselected()) {
+                    duration = DESELECT_DURATION;
+                }
             }
         }
 
