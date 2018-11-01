@@ -3,6 +3,7 @@ package org.jusecase.ui.opengl;
 import org.jusecase.Application;
 import org.jusecase.ApplicationBackend;
 import org.jusecase.inject.Component;
+import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.node2d.Node2d;
 import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.render.Renderer;
@@ -101,14 +102,14 @@ public class QuadPongTester implements Application {
                 ball.setX(leftPlayer.getX() + leftPlayer.getWidth());
                 ball.reflectX();
                 ball.changeColor();
-                leftPlayer.getColor().set(ball.getColor());
+                leftPlayer.setColor(ball.getColor());
             }
 
             if (ball.getX() + ball.getWidth() > rightPlayer.getX() && ball.getY() >= rightPlayer.getY() && ball.getY() <= rightPlayer.getY() + rightPlayer.getHeight()) {
                 ball.setX(rightPlayer.getX() - ball.getWidth());
                 ball.reflectX();
                 ball.changeColor();
-                rightPlayer.getColor().set(ball.getColor());
+                rightPlayer.setColor(ball.getColor());
             }
 
             if (ball.getY() < 0.0f) {
@@ -151,7 +152,7 @@ public class QuadPongTester implements Application {
         }
 
         public void changeColor() {
-            getColor().randomHue();
+            setColor(Color.randomHue());
         }
     }
 
