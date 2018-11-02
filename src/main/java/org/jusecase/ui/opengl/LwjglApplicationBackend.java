@@ -6,16 +6,17 @@ import org.jusecase.inject.Injector;
 import org.jusecase.scenegraph.render.PaintersAlgorithmRenderer;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.scenegraph.time.CurrentTime;
+import org.jusecase.scenegraph.time.NextFrameScheduler;
 import org.jusecase.scenegraph.time.StopWatch;
 import org.jusecase.signals.Signal;
 import org.jusecase.ui.font.BitmapFontLoader;
 import org.jusecase.ui.input.Event;
 import org.jusecase.ui.input.InputProcessor;
 import org.jusecase.ui.opengl.input.MouseScrollProcessor;
+import org.jusecase.ui.opengl.input.MouseTouchProcessor;
 import org.jusecase.ui.opengl.render.VboRenderer;
 import org.jusecase.ui.opengl.texture.atlas.StarlingTextureAtlasLoader;
 import org.jusecase.ui.opengl.texture.stbi.StbiTextureLoader;
-import org.jusecase.ui.opengl.input.MouseTouchProcessor;
 import org.jusecase.ui.opengl.util.ScreenConverter;
 import org.jusecase.ui.signal.OnResize;
 import org.jusecase.ui.signal.OnResizeListener;
@@ -36,23 +37,19 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class LwjglApplicationBackend implements ApplicationBackend {
 
+    private final OnResize onResize = new OnResize();
     private Class<? extends Application> applicationClass;
     private Application application;
-
     private long window;
-
     private List<InputProcessor> inputProcessors = new ArrayList<>();
     private StopWatch stopWatch;
+    private NextFrameScheduler nextFrame;
     private ScreenConverter screenConverter;
-
-    private final OnResize onResize = new OnResize();
+    private Renderer renderer;
 
     public LwjglApplicationBackend(Class<? extends Application> applicationClass) {
         this.applicationClass = applicationClass;
     }
-
-    private Renderer renderer;
-
 
     protected void render() {
         application.render(renderer);
@@ -74,6 +71,7 @@ public class LwjglApplicationBackend implements ApplicationBackend {
         injector.add(new BitmapFontLoader());
         injector.add(new CurrentTime());
         injector.add(stopWatch = new StopWatch());
+        injector.add(nextFrame = new NextFrameScheduler());
         injector.add(screenConverter);
 
         inputProcessors.add(new MouseTouchProcessor(window));
@@ -127,6 +125,8 @@ public class LwjglApplicationBackend implements ApplicationBackend {
     }
 
     private void update() {
+        nextFrame.run();
+
         for (InputProcessor inputProcessor : inputProcessors) {
             Event event = inputProcessor.poll();
             if (event != null) {
