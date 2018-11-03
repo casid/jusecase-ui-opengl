@@ -128,10 +128,9 @@ public class VboRenderer implements Renderer, OnResizeListener {
             if (batch.isUnused()) {
                 batch.dispose();
                 iterator.remove();
+                continue;
             }
-        }
 
-        for (QuadBatch batch : batches) {
             if (batch.getTextureId() > 0) {
                 imageShader.use();
             } else {
@@ -207,7 +206,7 @@ public class VboRenderer implements Renderer, OnResizeListener {
 
             if (batch == null || batch.isStateChangeRequired(textureId)) {
                 batch = new QuadBatch(textureId);
-                batches.add(batch);
+                batches.add(currentBatchIndex, batch);
             }
         }
 
