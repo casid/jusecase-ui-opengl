@@ -6,6 +6,7 @@ import org.jusecase.scenegraph.node2d.Image;
 import org.jusecase.scenegraph.Node;
 import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.math.Matrix3x2;
+import org.jusecase.scenegraph.render.BlendMode;
 import org.jusecase.scenegraph.render.Renderer;
 import org.jusecase.ui.opengl.shader.Shader;
 import org.jusecase.ui.opengl.shader.stage.FragmentShader;
@@ -26,6 +27,7 @@ public class VboRenderer implements Renderer, OnResizeListener {
     private ApplicationBackend applicationBackend;
 
     private int currentTextureId;
+    private BlendMode currentBlendMode;
 
     private final List<QuadBatch> batches = new ArrayList<>();
     private int currentBatchIndex = -1;
@@ -120,7 +122,6 @@ public class VboRenderer implements Renderer, OnResizeListener {
     @Override
     public void end() {
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         Iterator<QuadBatch> iterator = batches.iterator();
         while (iterator.hasNext()) {
@@ -142,7 +143,7 @@ public class VboRenderer implements Renderer, OnResizeListener {
             }
 
             bindTexture(batch.getTextureId());
-
+            setBlendMode(batch.getBlendMode());
             batch.draw();
         }
 
@@ -198,14 +199,14 @@ public class VboRenderer implements Renderer, OnResizeListener {
 
     private QuadBatch getBatch(Quad quad, int textureId) {
         QuadBatch batch = getCurrentBatch();
-        if (batch == null || batch.isStateChangeRequired(textureId)) {
+        if (batch == null || batch.isStateChangeRequired(quad, textureId)) {
 
             // try if next batch is available & compatible
             currentBatchIndex++;
             batch = getCurrentBatch();
 
-            if (batch == null || batch.isStateChangeRequired(textureId)) {
-                batch = new QuadBatch(textureId);
+            if (batch == null || batch.isStateChangeRequired(quad, textureId)) {
+                batch = new QuadBatch(quad.getBlendMode(), textureId);
                 batches.add(currentBatchIndex, batch);
             }
         }
@@ -224,6 +225,30 @@ public class VboRenderer implements Renderer, OnResizeListener {
         if (textureId != currentTextureId) {
             glBindTexture(GL_TEXTURE_2D, textureId);
             currentTextureId = textureId;
+        }
+    }
+
+    private void setBlendMode(BlendMode blendMode) {
+        if (blendMode != currentBlendMode) {
+            switch (blendMode) {
+                case None:
+                    glBlendFunc(GL_ONE, GL_ZERO);
+                    break;
+                case Default:
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    break;
+                case Add:
+                    glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+                    break;
+                case Multiply:
+                    glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                    break;
+                case Screen:
+                    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                    break;
+            }
+
+            currentBlendMode = blendMode;
         }
     }
 

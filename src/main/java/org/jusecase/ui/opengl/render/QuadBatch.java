@@ -3,6 +3,7 @@ package org.jusecase.ui.opengl.render;
 import org.jusecase.scenegraph.node2d.Image;
 import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.color.Color;
+import org.jusecase.scenegraph.render.BlendMode;
 import org.jusecase.scenegraph.texture.TexCoords;
 import org.jusecase.scenegraph.texture.Texture;
 import org.jusecase.scenegraph.texture.TextureFrame;
@@ -33,6 +34,7 @@ class QuadBatch {
     private int vaoId;
     private int vboId;
     private final int textureId;
+    private final BlendMode blendMode;
 
     private final float[][] quadVertices = {
             {0, 0},
@@ -45,7 +47,8 @@ class QuadBatch {
 
     private static final int FLOAT_BYTES = 4;
 
-    QuadBatch(int textureId) {
+    QuadBatch(BlendMode blendMode, int textureId) {
+        this.blendMode = blendMode;
         this.textureId = textureId;
     }
 
@@ -266,8 +269,12 @@ class QuadBatch {
         return textureId;
     }
 
-    public boolean isStateChangeRequired(int textureId) {
-        return this.textureId != textureId;
+    public BlendMode getBlendMode() {
+        return blendMode;
+    }
+
+    public boolean isStateChangeRequired(Quad quad, int textureId) {
+        return this.blendMode != quad.getBlendMode() || this.textureId != textureId;
     }
 
     public boolean isUnused() {
