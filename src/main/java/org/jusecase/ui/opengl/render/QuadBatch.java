@@ -26,6 +26,7 @@ class QuadBatch {
     private List<Integer> quadHashes = new ArrayList<>();
     private FloatBuffer vertexBuffer;
     private boolean dirty = true;
+    private boolean unused;
     private int nextIndex;
     private int vaoId;
     private int vboId;
@@ -47,6 +48,8 @@ class QuadBatch {
     }
 
     void addQuad(Quad quad) {
+        unused = false;
+
         if (dirty) {
             quads.add(quad);
             quadHashes.add(hash(quad));
@@ -145,10 +148,10 @@ class QuadBatch {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         if (textureId == 0) {
-            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 6);
+            glDrawArrays(GL_TRIANGLES, 0, quads.size() * 6);
         } else {
             glEnableVertexAttribArray(2);
-            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit() / 8);
+            glDrawArrays(GL_TRIANGLES, 0, quads.size() * 6);
             glDisableVertexAttribArray(2);
         }
         glDisableVertexAttribArray(1);
@@ -246,5 +249,13 @@ class QuadBatch {
 
     public boolean isStateChangeRequired(int textureId) {
         return this.textureId != textureId;
+    }
+
+    public boolean isUnused() {
+        return unused;
+    }
+
+    public void setUnused(boolean unused) {
+        this.unused = unused;
     }
 }

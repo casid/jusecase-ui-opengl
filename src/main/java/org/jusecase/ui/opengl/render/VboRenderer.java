@@ -14,6 +14,7 @@ import org.jusecase.ui.signal.OnResizeListener;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -53,6 +54,10 @@ public class VboRenderer implements Renderer, OnResizeListener {
         if (projection == null) {
             projection = new Matrix3x2();
             onResize(applicationBackend.getWidth(), applicationBackend.getHeight());
+        }
+
+        for (QuadBatch batch : batches) {
+            batch.setUnused(true);
         }
     }
 
@@ -116,6 +121,15 @@ public class VboRenderer implements Renderer, OnResizeListener {
     public void end() {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        Iterator<QuadBatch> iterator = batches.iterator();
+        while (iterator.hasNext()) {
+            QuadBatch batch = iterator.next();
+            if (batch.isUnused()) {
+                batch.dispose();
+                iterator.remove();
+            }
+        }
 
         for (QuadBatch batch : batches) {
             if (batch.getTextureId() > 0) {
