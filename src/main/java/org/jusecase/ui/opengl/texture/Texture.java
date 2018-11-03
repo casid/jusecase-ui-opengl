@@ -1,6 +1,7 @@
 package org.jusecase.ui.opengl.texture;
 
 import org.jusecase.scenegraph.texture.TexCoords;
+import org.jusecase.scenegraph.texture.TextureFrame;
 
 import java.nio.ByteBuffer;
 
@@ -48,6 +49,11 @@ public class Texture implements org.jusecase.scenegraph.texture.Texture {
     @Override
     public TexCoords getTexCoords() {
         return TexCoords.DEFAULT;
+    }
+
+    @Override
+    public TextureFrame getFrame() {
+        return null;
     }
 
     private int getFormat() {

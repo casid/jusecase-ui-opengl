@@ -4,6 +4,8 @@ import org.jusecase.scenegraph.node2d.Image;
 import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.color.Color;
 import org.jusecase.scenegraph.texture.TexCoords;
+import org.jusecase.scenegraph.texture.Texture;
+import org.jusecase.scenegraph.texture.TextureFrame;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -74,7 +76,7 @@ class QuadBatch {
     }
 
     private void addVertices(Quad quad) {
-        fillQuadVertices(quad);
+        fillQuadVertices(quad, null);
         fillQuadColor(quad);
 
         vertexBuffer.put(quadVertices[0]);
@@ -92,15 +94,32 @@ class QuadBatch {
         vertexBuffer.put(quadColor);
     }
 
-    private void fillQuadVertices(Quad quad) {
-        quadVertices[0][0] = 0;
-        quadVertices[0][1] = 0;
-        quadVertices[1][0] = quad.getWidth();
-        quadVertices[1][1] = 0;
-        quadVertices[2][0] = quad.getWidth();
-        quadVertices[2][1] = quad.getHeight();
-        quadVertices[3][0] = 0;
-        quadVertices[3][1] = quad.getHeight();
+    private void fillQuadVertices(Quad quad, Texture texture) {
+        if (texture == null || texture.getFrame() == null) {
+            quadVertices[0][0] = 0;
+            quadVertices[0][1] = 0;
+            quadVertices[1][0] = quad.getWidth();
+            quadVertices[1][1] = 0;
+            quadVertices[2][0] = quad.getWidth();
+            quadVertices[2][1] = quad.getHeight();
+            quadVertices[3][0] = 0;
+            quadVertices[3][1] = quad.getHeight();
+        } else {
+            TextureFrame frame = texture.getFrame();
+            float left = frame.left;
+            float top = frame.top;
+            float right = texture.getWidth() - frame.right;
+            float bottom = texture.getHeight() - frame.bottom;
+
+            quadVertices[0][0] = left;
+            quadVertices[0][1] = top;
+            quadVertices[1][0] = right;
+            quadVertices[1][1] = top;
+            quadVertices[2][0] = right;
+            quadVertices[2][1] = bottom;
+            quadVertices[3][0] = left;
+            quadVertices[3][1] = bottom;
+        }
 
         for (float[] vertex : quadVertices) {
             quad.getGlobalMatrix().transformPoint(vertex);
@@ -116,7 +135,7 @@ class QuadBatch {
     }
 
     private void addVertices(Image image) {
-        fillQuadVertices(image);
+        fillQuadVertices(image, image.getTexture());
         fillQuadColor(image);
 
         TexCoords texCoords = image.getTexture().getTexCoords();

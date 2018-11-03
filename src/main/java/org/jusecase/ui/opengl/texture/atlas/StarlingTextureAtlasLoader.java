@@ -1,10 +1,7 @@
 package org.jusecase.ui.opengl.texture.atlas;
 
 import org.jusecase.inject.Component;
-import org.jusecase.scenegraph.texture.Texture;
-import org.jusecase.scenegraph.texture.TextureAtlas;
-import org.jusecase.scenegraph.texture.TextureAtlasLoader;
-import org.jusecase.scenegraph.texture.TextureLoader;
+import org.jusecase.scenegraph.texture.*;
 import org.jusecase.util.PathUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -49,7 +46,7 @@ public class StarlingTextureAtlasLoader implements TextureAtlasLoader {
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attributes) {
 
             if ("TextureAtlas".equals(qName)) {
                 String imagePath = attributes.getValue("imagePath");
@@ -59,12 +56,31 @@ public class StarlingTextureAtlasLoader implements TextureAtlasLoader {
 
             if ("SubTexture".equals(qName)) {
                 String name = attributes.getValue("name");
-                int x = Integer.parseInt(attributes.getValue("x"));
-                int y = Integer.parseInt(attributes.getValue("y"));
-                int w = Integer.parseInt(attributes.getValue("width"));
-                int h = Integer.parseInt(attributes.getValue("height"));
+                int x = parseInteger(attributes, "x");
+                int y = parseInteger(attributes, "y");
+                int w = parseInteger(attributes, "width");
+                int h = parseInteger(attributes, "height");
 
-                textureAtlas.put(name, x, y, w, h);
+                int fx = parseInteger(attributes, "frameX");
+                int fy = parseInteger(attributes, "frameY");
+                int fw = parseInteger(attributes, "frameWidth");
+                int fh = parseInteger(attributes, "frameHeight");
+
+                if (fx == 0 && fy == 0 && fw == 0 && fh == 0) {
+                    textureAtlas.put(name, x, y, w, h);
+                } else {
+                    textureAtlas.put(name, x, y, w, h, new TextureFrame(-fx, fh - h + fy, fw - w + fx, -fy));
+                }
+
+            }
+        }
+
+        private int parseInteger(Attributes attributes, String name) {
+            String value = attributes.getValue(name);
+            if (value == null) {
+                return 0;
+            } else {
+                return Integer.parseInt(value);
             }
         }
     }
