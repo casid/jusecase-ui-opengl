@@ -134,10 +134,18 @@ class QuadBatch {
 
     private void fillQuadColor(Quad quad) {
         Color color = quad.getColor();
-        quadColor[0] = color.r;
-        quadColor[1] = color.g;
-        quadColor[2] = color.b;
-        quadColor[3] = color.a * quad.getAlpha();
+
+        if (quad.getBlendMode() == BlendMode.Multiply) {
+            quadColor[0] = color.r * quad.getAlpha();
+            quadColor[1] = color.g * quad.getAlpha();
+            quadColor[2] = color.b * quad.getAlpha();
+            quadColor[3] = color.a * quad.getAlpha();
+        } else {
+            quadColor[0] = color.r;
+            quadColor[1] = color.g;
+            quadColor[2] = color.b;
+            quadColor[3] = color.a * quad.getAlpha();
+        }
     }
 
     private void addVertices(Image image) {
