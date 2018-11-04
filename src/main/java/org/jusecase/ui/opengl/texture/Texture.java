@@ -1,5 +1,6 @@
 package org.jusecase.ui.opengl.texture;
 
+import org.jusecase.scenegraph.math.DrawHash;
 import org.jusecase.scenegraph.texture.TexCoords;
 import org.jusecase.scenegraph.texture.TextureFrame;
 
@@ -77,5 +78,10 @@ public class Texture implements org.jusecase.scenegraph.texture.Texture {
 
     public ByteBuffer getData() {
         return data;
+    }
+
+    @Override
+    public void hash(DrawHash hash) {
+        hash.add(id);
     }
 }

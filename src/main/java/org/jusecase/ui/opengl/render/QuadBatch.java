@@ -1,5 +1,6 @@
 package org.jusecase.ui.opengl.render;
 
+import org.jusecase.scenegraph.math.DrawHash;
 import org.jusecase.scenegraph.node2d.Image;
 import org.jusecase.scenegraph.node2d.Quad;
 import org.jusecase.scenegraph.color.Color;
@@ -25,6 +26,8 @@ import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 class QuadBatch {
+    private static final DrawHash HASH = new DrawHash();
+
     private List<Quad> quads = new ArrayList<>();
     private List<Integer> quadHashes = new ArrayList<>();
     private FloatBuffer vertexBuffer;
@@ -73,9 +76,9 @@ class QuadBatch {
     }
 
     private int hash(Quad quad) {
-        int result = quad.getGlobalMatrix().hashCode();
-        result = 31 * result + quad.getColor().hashCode();
-        return result;
+        HASH.reset();
+        quad.hash(HASH);
+        return HASH.get();
     }
 
     private void addVertices(Quad quad) {
