@@ -137,7 +137,7 @@ class QuadBatch {
         quadColor[0] = color.r;
         quadColor[1] = color.g;
         quadColor[2] = color.b;
-        quadColor[3] = color.a;
+        quadColor[3] = color.a * quad.getAlpha();
     }
 
     private void addVertices(Image image) {
